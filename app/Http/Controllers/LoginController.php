@@ -26,18 +26,14 @@ class LoginController extends Controller
             $user = Auth::user();
             if ($user->position == "Admin" && $user->authorization_level == 2) {
                 return redirect()->route('dashboardAdmin');
-            }
-
-            if ($user->position == "Staff Human Resource" && $user->authorization_level == 1) {
+            } else if ($user->position == "Staff Human Resource" && $user->authorization_level == 1) {
                 return redirect()->route('dashboardHR');
-            }
-
-            if (($user->position == "Staff Inventory" && $user->authorization_level == 1) || ($user->position == "Supplier" && $user->authorization_level == 1)) {
+            } else if (($user->position == "Staff Inventory" && $user->authorization_level == 1) || ($user->position == "Supplier" && $user->authorization_level == 1)) {
                 return redirect()->route('dashboardInven');
-            }
-
-            if ($user->position == "Staff Sales" && $user->authorization_level == 1) {
+            } else if ($user->position == "Staff Sales" && $user->authorization_level == 1) {
                 return redirect()->route('dashboardSales');
+            } else if ($user->position == "Staff Finance" && $user->authorization_level == 1) {
+                return redirect()->route('dashboardFinance');
             }
         }
         return back()->with('loginError', 'Login Failed!');

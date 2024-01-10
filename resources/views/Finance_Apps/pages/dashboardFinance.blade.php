@@ -1,4 +1,4 @@
-@extends('Sales_Apps.layouts.app')
+@extends('Finance_Apps.layouts.app')
 
 @section('title')
     Dashboard
@@ -29,7 +29,7 @@
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
         </div>
         <div class="row">
-            <div class="col-xl-3 col-md-6 mb-4">
+            {{-- <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -99,7 +99,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
   
         <!-- Card -->
         {{-- <div class="card shadow mb-4">
