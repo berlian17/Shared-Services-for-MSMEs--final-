@@ -129,4 +129,71 @@ class FinanceController extends Controller
 
         return redirect()->back();
     }
+
+    public function balanceSheetReport(Request $request)
+    {
+        // Get data
+        $ca = CurrentAsset::where('user_id', Auth::user()->id)
+            ->whereBetween('created_at', [$request->dateStart, $request->dateEnd])
+            ->get();
+        $nca = NonCurrentAsset::where('user_id', Auth::user()->id)
+            ->whereBetween('created_at', [$request->dateStart, $request->dateEnd])
+            ->get();
+        $html = '';
+
+        $html .= '
+            <h6 class="mb-3 text-gray-800 text-center"><b>BALANCE SHEET</b></h6>
+            <h6 class="mb-3 text-gray-800 text-center"><b>PER TANGGAL </b></h6>
+            <table class="table">
+                <thead class="table-primary">
+                    <th><b>Aset Lancar</b></th>
+                    <th><b><span class="prevMonthCA"></b></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-indent: 40px;">Kas dan setara kas</td>
+                        <td id="cashCA">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent: 40px;">Piutang usaha</td>
+                        <td id="accountsReceivableCA">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent: 40px;">Persediaan</td>
+                        <td id="suppliesCA">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent: 40px;">Aset lancar lainnya</td>
+                        <td id="otherCA">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td><b>Jumlah aset lancar</b></td>
+                        <td id="totalCA"><b>Rp 0</b></td>
+                    </tr>
+                    <tr>
+                        <td class="table-primary"><b>Aset Tidak Lancar</b></td>
+                        <td class="table-primary"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent: 40px;">Aset tetap</td>
+                        <td id="fixedAssetsNCA">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td style="text-indent: 40px;">Akumulasi penyusutan</td>
+                        <td id="depreciationNCA">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td><b>Jumlah aset tidak lancar</b></td>
+                        <td id="totalNCA"><b>Rp 0</b></td>
+                    </tr>
+                    <tr>
+                        <td class="table-warning"><b>Jumlah aset</b></td>
+                        <td class="table-warning" id="totalAsset"><b>Rp 0</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        ';
+
+        return $html;
+    }
 }

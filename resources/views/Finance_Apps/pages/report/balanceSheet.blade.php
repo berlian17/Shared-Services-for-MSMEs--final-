@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-md-6 col-12">
                 <div class="card shadow mb-4">
-                    <div class="card-body mt-2 mb-2">
+                    <div class="card-body">
                         <form method="POST" id="financeForm" action="{{ route('finance.addCAandNCA') }}">
                             @csrf
                             <div class="form-row">
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
 
-                            <h6 class="mb-3 mt-4 text-gray-800"><b>Aset Lancar</b></h6>
+                            <h6 class="mb-3 text-gray-800"><b>Aset Lancar</b></h6>
                             <div class="form-row">
                                 <div class="form-group col-12 col-md-6">
                                     <label for="inputCashCA">Kas</label>
@@ -84,7 +84,7 @@
                                 </div>
                             </div>
 
-                            <h6 class="mb-3 mt-4 text-gray-800"><b>Aset Tidak Lancar</b></h6>
+                            <h6 class="mb-3 text-gray-800"><b>Aset Tidak Lancar</b></h6>
                             <div class="form-row">
                                 <div class="form-group col-12 col-md-6">
                                     <label for="inputFixedAssetsNCA">Asset tetap</label>
@@ -105,7 +105,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-user btn-block mt-3 mb-2">
+                            <button type="submit" class="btn btn-primary btn-user btn-block">
                                 Submit
                             </button>
                         </form>
@@ -115,9 +115,9 @@
             <div class="col-md-6 col-12">
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <h6 class="mb-3 text-gray-800"><b>Aset Bulan <span class="prevMonthCA"></span> <span id="year"></span></b></h6>
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
+                        <h6 class="mb-4 text-gray-800"><b>Aset Bulan <span class="prevMonthCA"></span> <span id="year"></span></b></h6>
+                        <div class="table-responsive mt-4">
+                            <table class="table">
                                 <thead class="table-primary">
                                     <th><b>Aset Lancar</b></th>
                                     <th><b><span class="prevMonthCA"></b></th>
@@ -140,15 +140,9 @@
                                         <td id="otherCA">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Jumlah aset lancar</b></td>
-                                        <td id="totalCA"><b>Rp 0</b></td>
+                                        <td class="table-primary"><b>Aset Tidak Lancar</b></td>
+                                        <td class="table-primary"></td>
                                     </tr>
-                                </tbody>
-                                <thead class="table-primary">
-                                    <th><b>Aset Tidak Lancar</b></th>
-                                    <th></th>
-                                </thead>
-                                <tbody>
                                     <tr>
                                         <td style="text-indent: 40px;">Aset tetap</td>
                                         <td id="fixedAssetsNCA">Rp 0</td>
@@ -157,15 +151,7 @@
                                         <td style="text-indent: 40px;">Akumulasi penyusutan</td>
                                         <td id="depreciationNCA">Rp 0</td>
                                     </tr>
-                                    <tr>
-                                        <td><b>Jumlah aset tidak lancar</b></td>
-                                        <td id="totalNCA"><b>Rp 0</b></td>
-                                    </tr>
                                 </tbody>
-                                <thead class="table-primary">
-                                    <th><b>Jumlah aset</b></th>
-                                    <th id="totalAsset"><b>Rp 0</b></th>
-                                </thead>
                             </table>
                         </div>
                     </div>
@@ -176,6 +162,27 @@
         <!-- Balance Sheet Preview -->
         <div class="card shadow mb-4">
             <div class="card-body">
+                <form class="form mt-4" id="form">
+                    <div class="form-row">
+                        <div class="form-group col-12 col-md-3">
+                            <label for="">Mulai dari</label>
+                            <input type="date" class="form-control" name="dateStart" id="dateStart" value="{{ old('dateStart') }}" required>
+                        </div>
+                        <div class="form-group col-12 col-md-3">
+                                <label for="">Sampai dengan</label>
+                            <input type="date" class="form-control" name="dateEnd" id="dateEnd" value="{{ old('dateEnd') }}" required>
+                        </div>
+                        <div class="col-12 col-md-2 mt-3">
+                            <button type="submit" class="btn btn-primary btn-user btn-block mt-3">
+                                Tampilkan Laporan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="table-responsive mt-5">
+                    <div id="balance-sheet-report"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -252,6 +259,7 @@
                     $('#year').text('');
                 }
 
+                // Get data preview
                 $.ajax({
                     type: "GET",
                     url: "/finance/balance-sheet/get-CA-NCA/" + event.target.value,
@@ -273,14 +281,8 @@
                             $('#accountsReceivableCA').html(formatRupiah(res.data.ca.accounts_receivable));
                             $('#suppliesCA').html(formatRupiah(res.data.ca.supplies));
                             $('#otherCA').html(formatRupiah(res.data.ca.other_current_assets));
-                            var total_ca = (res.data.ca.cash + res.data.ca.accounts_receivable + res.data.ca.supplies + res.data.ca.other_current_assets);
-                            $('#totalCA').html(formatRupiah(total_ca));
                             $('#fixedAssetsNCA').html(formatRupiah(res.data.nca.fixed_assets));
                             $('#depreciationNCA').html(formatRupiah(res.data.nca.depreciation));
-                            var total_nca = (res.data.nca.fixed_assets + res.data.nca.depreciation);
-                            $('#totalNCA').html(formatRupiah(total_nca));
-                            var total_asset = (total_ca + total_nca);
-                            $('#totalAsset').html(formatRupiah(total_asset));
                         } else if (!res.status || (res.data.ca === null && res.data.nca === null)) {
                             $('#financeForm').attr('action', "{{ route('finance.addCAandNCA') }}");
                             
@@ -297,11 +299,8 @@
                             $('#accountsReceivableCA').html("Rp 0");
                             $('#suppliesCA').html("Rp 0");
                             $('#otherCA').html("Rp 0");
-                            $('#totalCA').html("Rp 0");
                             $('#fixedAssetsNCA').html("Rp 0");
                             $('#depreciationNCA').html("Rp 0");
-                            $('#totalNCA').html("Rp 0");
-                            $('#totalAsset').html("Rp 0");
                         }
                     }
                 });
@@ -311,6 +310,25 @@
             $('.rupiah').on('input', function() {
                 var formattedValue = inputFormatRupiah($(this).val());
                 $(this).val(formattedValue);
+            });
+
+            // Create balance sheet report
+            $('#form').on('submit', function(e) {
+                e.preventDefault();
+                var dateStart = $('#dateStart').val();
+                var dateEnd = $('#dateEnd').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/finance/balance-sheet/report",
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "dateStart": dateStart,
+                        "dateEnd": dateEnd,
+                    },
+                    success: function(data) {
+                        $('#balance-sheet-report').html(data);
+                    }
+                });
             });
         });
     </script>

@@ -199,6 +199,7 @@ Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
         Route::get('/get-CA-NCA/{month}', [FinanceController::class, 'getCAandNCA'])->name('finance.getCAandNCA');
         Route::post('/add-CA-NCA', [FinanceController::class, 'addCAandNCA'])->name('finance.addCAandNCA');
         Route::post('/update-CA-NCA', [FinanceController::class, 'updateCAandNCA'])->name('finance.updateCAandNCA');
+        Route::post('/report', [FinanceController::class, 'balanceSheetReport'])->name('finance.balanceSheetReport');
     });
 
     Route::get('/cash-flow', [ReportController::class, 'cashFlow'])->name('report.cashFlow');
