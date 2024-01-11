@@ -119,6 +119,11 @@ class ViewController extends Controller
         return view('Sales_Apps.pages.dashboardSales', compact('totalSales', 'totalSalesMonthly', 'totalOrder', 'totalOrderMonthly', 'orderReport', 'totalSalesMonthlyArray'));
     }
 
+    public function dashboardFinance()
+    {
+        return view('Finance_Apps.pages.dashboardFinance');
+    }
+
     // Profile functions
     public function profile()
     {

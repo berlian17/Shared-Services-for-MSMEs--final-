@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'inven' => \App\Http\Middleware\IsInven::class,
         'supplier' => \App\Http\Middleware\IsSup::class,
         'sales' => \App\Http\Middleware\IsSal::class,
+        'finance' => \App\Http\Middleware\IsFin::class,
     ];
 }

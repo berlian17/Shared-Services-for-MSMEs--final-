@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
+    // Order Management
     public function index()
     {
         return view('Sales_Apps.pages.report.index');
@@ -109,7 +110,6 @@ class ReportController extends Controller
                 $salesCount1 += $totalSales1[$item->id];
             }
         }
-error_log($soldCount1);
 
         $html .= '
                     </tbody>
@@ -193,7 +193,7 @@ error_log($soldCount1);
         } else {
             $order = Order::where('user_id', Auth::user()->id)->get();
         }
-        
+
         $soldCount = 0;
         $salesCount = 0;
         $html = '';
@@ -477,8 +477,32 @@ error_log($soldCount1);
         return Excel::download(new exportOrderReportByDate($request->dateStart, $request->dateEnd), $filename);
     }
 
-    public function riwayatLaporan() {
+    public function riwayatLaporan()
+    {
         // Isi Logika disini
         return view('Sales_Apps.pages.report.riwayatLaporan');
+    }
+
+    // Finance Management
+    public function cashFlow()
+    {
+        return view('Finance_Apps.pages.report.cashFlow');
+    }
+
+    public function profitLoss()
+    {
+        return view('Finance_Apps.pages.report.profitLoss');
+    }
+
+    public function exportBalanceSheet()
+    {
+    }
+
+    public function exportCashFlow()
+    {
+    }
+
+    public function exportProfitLoss()
+    {
     }
 }

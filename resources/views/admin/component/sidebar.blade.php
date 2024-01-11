@@ -1,5 +1,4 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboardAdmin') }}">
         <div class="sidebar-brand-icon rotate-n-15">
@@ -166,6 +165,21 @@
             <i class="fas fa-fw fa-user"></i>
             <span>Pelanggan</span>
         </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    {{-- ====================================================================================================================================================================  --}}
+    {{-- ====================================================================================================================================================================  --}}
+    <!-- Heading Sales -->
+    <div class="sidebar-heading">
+        Manajemen Keuangan
+    </div>
+
+    <!-- Nav Item - Order Menu -->
+    <li class="nav-item">
+        
     </li>
 
     <!-- Divider -->

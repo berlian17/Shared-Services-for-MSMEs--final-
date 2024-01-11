@@ -75,6 +75,24 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('123456'),
             'authorization_level' => 1,
         ]);
+        User::create([
+            'name'     => 'Zuhdi1',
+            'email'    => 'zuhdi1@gmail.com',
+            'position' => 'Staff Finance',
+            'phone'    => '021813194',
+            'gender'   => 'Pria',
+            'password' => bcrypt('123456'),
+            'authorization_level' => 1,
+        ]);
+        User::create([
+            'name'     => 'Zuhdi2',
+            'email'    => 'zuhdi2@gmail.com',
+            'position' => 'Staff Finance',
+            'phone'    => '021813193',
+            'gender'   => 'Pria',
+            'password' => bcrypt('123456'),
+            'authorization_level' => 1,
+        ]);
 
         // Seeder for Company
         Company::create([

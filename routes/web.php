@@ -17,6 +17,7 @@ use App\Http\Controllers\PicketsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ReportController;
@@ -49,14 +50,12 @@ Route::post('/ccSubmit', [ViewController::class, 'ccSubmit'])->name('contact.sub
 
 // ====================================================================================================================================================================
 // ====================================================================================================================================================================
-// ====================================================================================================================================================================
 // Admin Route
 Route::prefix('admin')->middleware(['admin', 'auth'])->group(function () {
     Route::get('/dashboardAdmin', [AdminController::class, 'dashboardAdmin'])->name('dashboardAdmin');
-    Route::get('/daftar-perusahaan',[AdminController::class, 'companyList'])->name('hr.companyList');
+    Route::get('/daftar-perusahaan', [AdminController::class, 'companyList'])->name('hr.companyList');
 });
 
-// ====================================================================================================================================================================
 // ====================================================================================================================================================================
 // ====================================================================================================================================================================
 // HR Route
@@ -89,7 +88,6 @@ Route::prefix('hr')->middleware(['hr', 'auth'])->group(function () {
     Route::get('/cetak-pegawai-pertanggal/{tglawal}/{tglakhir}', [AttendController::class, 'cetakAbsenPertanggal'])->name('absensi.pertanggal');
 });
 
-// ====================================================================================================================================================================
 // ====================================================================================================================================================================
 // ====================================================================================================================================================================
 // Inventory Route
@@ -133,12 +131,11 @@ Route::prefix('supplier')->middleware(['supplier', 'auth'])->group(function () {
 
 // ====================================================================================================================================================================
 // ====================================================================================================================================================================
-// ====================================================================================================================================================================
 // Sales Route
 Route::prefix('sales')->middleware(['sales', 'auth'])->group(function () {
     Route::get('/dashboardSales', [ViewController::class, 'dashboardSales'])->name('dashboardSales');
 
-    Route::prefix('/order')->group(function() {
+    Route::prefix('/order')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('order.index');
         Route::get('/input', [OrderController::class, 'addOrderpage'])->name('order.addpage');
         Route::post('/input', [OrderController::class, 'addOrder'])->name('order.add');
@@ -160,7 +157,7 @@ Route::prefix('sales')->middleware(['sales', 'auth'])->group(function () {
         Route::post('/decrease-quantity/{id}', [OrderController::class, 'decreaseQuantity'])->name('order.decreaseQuantity');
     });
 
-    Route::prefix('/report')->group(function() {
+    Route::prefix('/report')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('report.index');
         Route::post('/report-by-product', [ReportController::class, 'reportByProduct'])->name('report.reportByProduct');
         Route::post('/report-by-customer', [ReportController::class, 'reportByCustomer'])->name('report.reportByCustomer');
@@ -168,7 +165,7 @@ Route::prefix('sales')->middleware(['sales', 'auth'])->group(function () {
         Route::post('/report-by-date', [ReportController::class, 'reportByDate'])->name('report.reportByDate');
         Route::get('/riwayat-laporan', [ReportController::class, 'riwayatLaporan'])->name('report.riwayatLaporan');
 
-        Route::prefix('/export')->group(function() {
+        Route::prefix('/export')->group(function () {
             Route::get('/report-by-product', [ReportController::class, 'exportReportByProduct'])->name('report.exportReportByProduct');
             Route::get('/report-by-customer', [ReportController::class, 'exportReportByCustomer'])->name('report.exportReportByCustomer');
             Route::get('/report-by-status', [ReportController::class, 'exportReportByStatus'])->name('report.exportReportByStatus');
@@ -178,11 +175,39 @@ Route::prefix('sales')->middleware(['sales', 'auth'])->group(function () {
         Route::get('download/{id}', [HomeController::class, 'getDownload'])->name('report.download');
     });
 
-    Route::prefix('/customer')->group(function() {
+    Route::prefix('/customer')->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('customer.index');
         Route::get('/add', [CustomerController::class, 'addCustomerpage'])->name('customer.addpage');
         Route::post('/add', [CustomerController::class, 'addCustomer'])->name('customer.add');
         Route::get('/delete/{id}', [CustomerController::class, 'deleteCustomer'])->name('customer.delete');
         Route::get('/{id}', [CustomerController::class, 'customerData'])->name('customer.data');
+    });
+});
+
+// ====================================================================================================================================================================
+// ====================================================================================================================================================================
+// Finance Route
+Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
+    Route::get('/dashboardFinance', [ViewController::class, 'dashboardFinance'])->name('dashboardFinance');
+
+    Route::prefix('/manage-finance')->group(function () {
+        Route::get('/', [FinanceController::class, 'index'])->name('finance.index');
+    });
+
+    Route::prefix('/balance-sheet')->group(function () {
+        Route::get('/', [FinanceController::class, 'balanceSheet'])->name('finance.balanceSheet');
+        Route::get('/get-CA-NCA/{month}', [FinanceController::class, 'getCAandNCA'])->name('finance.getCAandNCA');
+        Route::post('/add-CA-NCA', [FinanceController::class, 'addCAandNCA'])->name('finance.addCAandNCA');
+        Route::post('/update-CA-NCA', [FinanceController::class, 'updateCAandNCA'])->name('finance.updateCAandNCA');
+        Route::post('/report', [FinanceController::class, 'balanceSheetReport'])->name('finance.balanceSheetReport');
+    });
+
+    Route::get('/cash-flow', [ReportController::class, 'cashFlow'])->name('report.cashFlow');
+    Route::get('/profit-loss', [ReportController::class, 'profitLoss'])->name('report.profitLoss');
+
+    Route::prefix('/export')->group(function () {
+        Route::get('/balance-sheet', [ReportController::class, 'exportBalanceSheet'])->name('report.exportBalanceSheet');
+        Route::get('/cash-flow', [ReportController::class, 'exportCashFlow'])->name('report.exportCashFlow');
+        Route::get('/profit-loss', [ReportController::class, 'exportProfitLoss'])->name('report.exportProfitLoss');
     });
 });
