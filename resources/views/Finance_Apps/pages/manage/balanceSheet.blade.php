@@ -4,11 +4,6 @@
     Manajemen Keuangan
 @endsection
 
-{{-- @push('addon-style')
-    <!-- Custom styles for this page -->
-    <link href="{{ asset('template/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-@endpush --}}
-
 @section('content-finance')
     <div class="container-fluid">
         <!-- Page Heading -->
@@ -16,17 +11,16 @@
             <h1 class="h3 mb-0 text-gray-800">Balance Sheet</h1>
         </div>
 
-        <!-- CA & NCA -->
         <div class="row">
             <div class="col-md-6 col-12">
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <form method="POST" id="financeForm" action="{{ route('finance.addCAandNCA') }}">
+                        <form method="POST" id="financeForm" action="{{ route('finance.addBalanceSheet') }}">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label for="inputMonth">Bulan</label>
-                                    <select class="form-control" id="monthCA" name="month">
+                                    <select class="form-control" id="month" name="month">
                                         <option value="0">Pilih Bulan</option>
                                         <option value="1">Januari</option>
                                         <option value="2">Februari</option>
@@ -44,6 +38,7 @@
                                 </div>
                             </div>
 
+                            <!-- CA -->
                             <h6 class="mb-3 text-gray-800"><b>Aset Lancar</b></h6>
                             <div class="form-row">
                                 <div class="form-group col-12 col-md-6">
@@ -84,6 +79,7 @@
                                 </div>
                             </div>
 
+                            <!-- NCA -->
                             <h6 class="mb-3 text-gray-800"><b>Aset Tidak Lancar</b></h6>
                             <div class="form-row">
                                 <div class="form-group col-12 col-md-6">
@@ -115,12 +111,12 @@
             <div class="col-md-6 col-12">
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <h6 class="mb-4 text-gray-800"><b>Aset Bulan <span class="prevMonthCA"></span> <span id="year"></span></b></h6>
+                        <h6 class="mb-4 text-gray-800"><b>Aset Bulan <span class="prevMonth"></span> <span id="year"></span></b></h6>
                         <div class="table-responsive mt-4">
                             <table class="table">
                                 <thead class="table-primary">
                                     <th><b>Aset Lancar</b></th>
-                                    <th><b><span class="prevMonthCA"></b></th>
+                                    <th><b><span class="prevMonth"></b></th>
                                 </thead>
                                 <tbody>
                                     <tr>
@@ -189,12 +185,6 @@
 @endsection
 
 @push('addon-script')
-    <!-- Page level plugins -->
-    <script src="{{ asset('template/vendor/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('template/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
-    {{-- <script src="{{ asset('template/js/demo/datatables-demo.js') }}"></script> --}}
     <script>
         function inputFormatRupiah(num) {
             var number_string = num.replace(/[^,\d]/g, '').toString(),
@@ -227,49 +217,48 @@
             var date = new Date();
             var year = date.getFullYear();
 
-            // Get CA & NCA
-            $('#monthCA').on('change', (event) => {
+            $('#month').on('change', (event) => {
                 $('#year').text(year);
                 if (event.target.value == 1) {
-                    $('.prevMonthCA').text('Januari');
+                    $('.prevMonth').text('Januari');
                 } else if (event.target.value == 2) {
-                    $('.prevMonthCA').text('Februari');
+                    $('.prevMonth').text('Februari');
                 } else if (event.target.value == 3) {
-                    $('.prevMonthCA').text('Maret');
+                    $('.prevMonth').text('Maret');
                 } else if (event.target.value == 4) {
-                    $('.prevMonthCA').text('April');
+                    $('.prevMonth').text('April');
                 } else if (event.target.value == 5) {
-                    $('.prevMonthCA').text('Mei');
+                    $('.prevMonth').text('Mei');
                 } else if (event.target.value == 6) {
-                    $('.prevMonthCA').text('Juni');
+                    $('.prevMonth').text('Juni');
                 } else if (event.target.value == 7) {
-                    $('.prevMonthCA').text('Juli');
+                    $('.prevMonth').text('Juli');
                 } else if (event.target.value == 8) {
-                    $('.prevMonthCA').text('Agustus');
+                    $('.prevMonth').text('Agustus');
                 } else if (event.target.value == 9) {
-                    $('.prevMonthCA').text('September');
+                    $('.prevMonth').text('September');
                 } else if (event.target.value == 10) {
-                    $('.prevMonthCA').text('Oktober');
+                    $('.prevMonth').text('Oktober');
                 } else if (event.target.value == 11) {
-                    $('.prevMonthCA').text('November');
+                    $('.prevMonth').text('November');
                 } else if (event.target.value == 12) {
-                    $('.prevMonthCA').text('Desember');
+                    $('.prevMonth').text('Desember');
                 } else {
-                    $('.prevMonthCA').text('');
+                    $('.prevMonth').text('');
                     $('#year').text('');
                 }
 
                 // Get data preview
                 $.ajax({
                     type: "GET",
-                    url: "/finance/balance-sheet/get-CA-NCA/" + event.target.value,
+                    url: "/finance/balance-sheet/get-balance-sheet/" + event.target.value,
                     success: function(res) {
                         if (res.status && (res.data.ca && res.data.nca)) {
-                            var action = "{{ route('finance.updateCAandNCA') }}?caID=" + res.data.ca.id + "&ncaID=" + res.data.nca.id;
+                            var action = "{{ route('finance.updateBalanceSheet') }}?caID=" + res.data.ca.id + "&ncaID=" + res.data.nca.id;
                             $('#financeForm').attr('action', action);
 
                             // Card left
-                            $('#inputCashCA').val((res.data.ca.cash).toString());
+                            $('#inputCashCA').val(res.data.ca.cash);
                             $('#inputAccountsReceivableCA').val(res.data.ca.accounts_receivable);
                             $('#inputSuppliesCA').val(res.data.ca.supplies);
                             $('#inputOtherCA').val(res.data.ca.other_current_assets);
@@ -284,7 +273,7 @@
                             $('#fixedAssetsNCA').html(formatRupiah(res.data.nca.fixed_assets));
                             $('#depreciationNCA').html(formatRupiah(res.data.nca.depreciation));
                         } else if (!res.status || (res.data.ca === null && res.data.nca === null)) {
-                            $('#financeForm').attr('action', "{{ route('finance.addCAandNCA') }}");
+                            $('#financeForm').attr('action', "{{ route('finance.addBalanceSheet') }}");
                             
                             // Card left
                             $('#inputCashCA').val('');

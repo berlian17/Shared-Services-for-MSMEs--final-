@@ -196,14 +196,23 @@ Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
 
     Route::prefix('/balance-sheet')->group(function () {
         Route::get('/', [FinanceController::class, 'balanceSheet'])->name('finance.balanceSheet');
-        Route::get('/get-CA-NCA/{month}', [FinanceController::class, 'getCAandNCA'])->name('finance.getCAandNCA');
-        Route::post('/add-CA-NCA', [FinanceController::class, 'addCAandNCA'])->name('finance.addCAandNCA');
-        Route::post('/update-CA-NCA', [FinanceController::class, 'updateCAandNCA'])->name('finance.updateCAandNCA');
+        Route::get('/get-balance-sheet/{month}', [FinanceController::class, 'getBalanceSheet'])->name('finance.getBalanceSheet');
+        Route::post('/add-balance-sheet', [FinanceController::class, 'addBalanceSheet'])->name('finance.addBalanceSheet');
+        Route::post('/update-balance-sheet', [FinanceController::class, 'updateBalanceSheet'])->name('finance.updateBalanceSheet');
         Route::post('/report', [FinanceController::class, 'balanceSheetReport'])->name('finance.balanceSheetReport');
     });
 
-    Route::get('/cash-flow', [ReportController::class, 'cashFlow'])->name('report.cashFlow');
-    Route::get('/profit-loss', [ReportController::class, 'profitLoss'])->name('report.profitLoss');
+    Route::prefix('/profit-loss')->group(function () {
+        Route::get('/', [FinanceController::class, 'profitLoss'])->name('finance.profitLoss');
+        Route::get('/get-profit-loss/{month}', [FinanceController::class, 'getProfitLoss'])->name('finance.getProfitLoss');
+        Route::post('/add-profit-loss', [FinanceController::class, 'addProfitLoss'])->name('finance.addProfitLoss');
+        Route::post('/update-profit-loss', [FinanceController::class, 'updateProfitLoss'])->name('finance.updateProfitLoss');
+        Route::post('/report', [FinanceController::class, 'profitLossReport'])->name('finance.profitLossReport');
+    });
+
+    Route::prefix('/cash-flow')->group(function () {
+        Route::get('/', [FinanceController::class, 'cashFlow'])->name('finance.cashFlow');
+    });
 
     Route::prefix('/export')->group(function () {
         Route::get('/balance-sheet', [ReportController::class, 'exportBalanceSheet'])->name('report.exportBalanceSheet');
