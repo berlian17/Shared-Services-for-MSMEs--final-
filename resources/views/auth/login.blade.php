@@ -9,7 +9,7 @@
     <meta name="description" content="website apps for Final Task">
     <meta name="Nadya Zahra" content="website apps for MSMEs">
 
-    <title>HR Apps - Login</title>
+    <title>Shared Service - Login</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('template/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">

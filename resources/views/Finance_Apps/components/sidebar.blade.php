@@ -23,26 +23,23 @@
     <div class="sidebar-heading">
         Menu Finance
     </div>
-    <li class="nav-item {{ Request::is('finance/manage*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('finance.index') }}">
-            <i class="fas fa-money-check-alt"></i>
-            <span>Manajemen Keuangan</span>
+    <li class="nav-item {{ Request::is('finance/balance-sheet') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('finance.balanceSheet') }}">
+            <i class="fas fa-receipt"></i>
+            <span>Balance Sheet</span>
         </a>
     </li>
-    <li class="nav-item {{ Request::is('finance/report*') ? 'active' : '' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReport"
-            aria-expanded="true" aria-controls="collapseOrder">
-            <i class="fas fa-fw fa-receipt"></i>
-            <span>Laporan Keuangan</span>
+    <li class="nav-item {{ Request::is('finance/profit-loss') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('finance.profitLoss') }}">
+            <i class="fas fa-receipt"></i>
+            <span>Profit & Loss</span>
         </a>
-        <div id="collapseReport" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ Request::is('finance/balance-sheet') ? 'active' : '' }}" href="{{ route('finance.balanceSheet') }}">Balance Sheet</a>
-                <a class="collapse-item {{ Request::is('finance/report/cash-flow') ? 'active' : '' }}" href="{{ route('report.cashFlow') }}">Cash Flow</a>
-                <a class="collapse-item {{ Request::is('finance/report/profit-loss') ? 'active' : '' }}" href="{{ route('report.profitLoss') }}">Profit & Loss</a>
-            </div>
-        </div>
+    </li>
+    <li class="nav-item {{ Request::is('finance/cash-flow') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('finance.cashFlow') }}">
+            <i class="fas fa-receipt"></i>
+            <span>Cash Flow</span>
+        </a>
     </li>
 
     <!-- Divider -->
