@@ -20,7 +20,7 @@
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label for="inputMonth">Bulan</label>
-                                    <select class="form-control" id="month" name="month">
+                                    <select class="form-control" id="month" name="month" required>
                                         <option value="">Pilih Bulan</option>
                                         <option value="1">Januari</option>
                                         <option value="2">Februari</option>
@@ -248,14 +248,14 @@
                                         <td id="factoryOverheadCOGS">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" class="table-secondary"><b>BI Penjualan</b></td>
+                                        <td colspan="2" class="table-secondary"><b>BI. Penjualan</b></td>
                                     </tr>
                                     <tr>
                                         <td style="text-indent: 40px">BI. Adm e-commerce</td>
                                         <td id="admEcommerceSSE">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">Gaji marketing</td>
+                                        <td style="text-indent: 40px">BI. Gaji marketing</td>
                                         <td id="marketingSalarySSE">Rp 0</td>
                                     </tr>
                                     <tr>
@@ -267,7 +267,7 @@
                                         <td id="otherCostsSSE">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" class="table-secondary"><b>BI Adm & Umum</b></td>
+                                        <td colspan="2" class="table-secondary"><b>BI. Adm & Umum</b></td>
                                     </tr>
                                     <tr>
                                         <td style="text-indent: 40px">BI. Gaji & tunjangan</td>
@@ -278,39 +278,39 @@
                                         <td id="electricityWaterGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI Transportasi</td>
+                                        <td style="text-indent: 40px">BI. Transportasi</td>
                                         <td id="transportationGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI Komunikasi</td>
+                                        <td style="text-indent: 40px">BI. Komunikasi</td>
                                         <td id="communicationGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI ATK</td>
+                                        <td style="text-indent: 40px">BI. ATK</td>
                                         <td id="officeStationeryGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI Konsultan</td>
+                                        <td style="text-indent: 40px">BI. Konsultan</td>
                                         <td id="consultantGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI Kebersihan & keamanan</td>
+                                        <td style="text-indent: 40px">BI. Kebersihan & keamanan</td>
                                         <td id="cleanlinessSecurityGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI Pemeliharaan & renovasi</td>
+                                        <td style="text-indent: 40px">BI. Pemeliharaan & renovasi</td>
                                         <td id="maintenanceRenovationGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI Penyusutan</td>
+                                        <td style="text-indent: 40px">BI. Penyusutan</td>
                                         <td id="depreciationGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI Pajak</td>
+                                        <td style="text-indent: 40px">BI. Pajak</td>
                                         <td id="taxGAC">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI Adm & umum lainnya</td>
+                                        <td style="text-indent: 40px">BI. Adm & umum lainnya</td>
                                         <td id="otherCostGAC">Rp 0</td>
                                     </tr>
                                 </tbody>
@@ -327,9 +327,12 @@
                 <form class="form mt-4" id="form">
                     <div class="form-row">
                         <div class="form-group col-12 col-md-3">
-                            <label for="">Profit & Loss Tahun</label>
-                            <select class="form-control" name="year">
+                            <label for="">Tahun</label>
+                            <select class="form-control" id="inputYear" required>
                                 <option value="">Pilih Tahun</option>
+                                @foreach ($years as $year)
+                                    <option value="{{ $year }}">{{ $year }}</option>
+                                @endforeach
                             </select>                        
                         </div>
                         <div class="col-12 col-md-2 mt-3">
@@ -516,11 +519,14 @@
             // Create profit & loss report
             $('#form').on('submit', function(e) {
                 e.preventDefault();
+                var yearInput = $('#inputYear').val();
+                
                 $.ajax({
                     type: "POST",
                     url: "/finance/profit-loss/report",
                     data: {
                         "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "year": yearInput,
                     },
                     success: function(data) {
                         $('#profit-loss-report').html(data);
