@@ -484,18 +484,21 @@ class ReportController extends Controller
     }
 
     // Finance Management
-    public function cashFlow()
+    public function exportBalanceSheet(Request $request)
     {
-        return view('Finance_Apps.pages.report.cashFlow');
-    }
+        $currentDate = Carbon::now();
+        // dd($currentDate);
+        $filename = ("balance_sheet_report_" . $currentDate . ".xlsx");
 
-    public function profitLoss()
-    {
-        return view('Finance_Apps.pages.report.profitLoss');
-    }
+        Excel::store(new exportOrderReportByDate($request->dateStart, $request->dateEnd), $filename, 'report');
+        $report = OrderReport::create([
+            'user_id' => Auth::user()->id,
+            'report' => $filename,
+            'report_date' => Carbon::now(),
+        ]);
+        $report->save();
 
-    public function exportBalanceSheet()
-    {
+        return Excel::download(new exportOrderReportByDate($request->dateStart, $request->dateEnd), $filename);
     }
 
     public function exportCashFlow()

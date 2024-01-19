@@ -20,7 +20,7 @@
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label for="inputMonth">Bulan</label>
-                                    <select class="form-control" id="month" name="month">
+                                    <select class="form-control" id="month" name="month" required>
                                         <option value="0">Pilih Bulan</option>
                                         <option value="1">Januari</option>
                                         <option value="2">Februari</option>
@@ -162,11 +162,11 @@
                     <div class="form-row">
                         <div class="form-group col-12 col-md-3">
                             <label for="">Mulai dari</label>
-                            <input type="date" class="form-control" name="dateStart" id="dateStart" value="{{ old('dateStart') }}" required>
+                            <input type="date" class="form-control" id="dateStart" value="{{ old('dateStart') }}" required>
                         </div>
                         <div class="form-group col-12 col-md-3">
                                 <label for="">Sampai dengan</label>
-                            <input type="date" class="form-control" name="dateEnd" id="dateEnd" value="{{ old('dateEnd') }}" required>
+                            <input type="date" class="form-control" id="dateEnd" value="{{ old('dateEnd') }}" required>
                         </div>
                         <div class="col-12 col-md-2 mt-3">
                             <button type="submit" class="btn btn-primary btn-user btn-block mt-3">
@@ -306,6 +306,7 @@
                 e.preventDefault();
                 var dateStart = $('#dateStart').val();
                 var dateEnd = $('#dateEnd').val();
+                
                 $.ajax({
                     type: "POST",
                     url: "/finance/balance-sheet/report",
