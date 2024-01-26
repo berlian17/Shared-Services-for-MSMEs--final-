@@ -13,14 +13,15 @@
 
         <div class="row">
             <div class="col-md-6 col-12">
+                <!-- COGS -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <form method="POST" id="financeForm" action="{{ route('finance.addProfitLoss') }}">
+                        <form method="POST" id="financeFormCOGS" action="{{ route('finance.addProfitLossCOGS') }}">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="inputMonth">Bulan</label>
-                                    <select class="form-control" id="month" name="month" required>
+                                    <label for="inputMonthCOGS">Bulan</label>
+                                    <select class="form-control" id="inputMonthCOGS" name="month" required>
                                         <option value="">Pilih Bulan</option>
                                         <option value="1">Januari</option>
                                         <option value="2">Februari</option>
@@ -38,8 +39,7 @@
                                 </div>
                             </div>
 
-                            <!-- COGS -->
-                            <h6 class="mb-3 mt-3 text-gray-800"><b>Harga Pokok Penjualan</b></h6>
+                            <h6 class="mb-3 text-gray-800"><b>Harga Pokok Penjualan</b></h6>
                             <div class="form-row">
                                 <div class="form-group col-12 col-md-6">
                                     <label for="inputRawMaterialCOGS">Bahan baku</label>
@@ -69,9 +69,40 @@
                                     </div>
                                 </div>
                             </div>
+                            <button type="submit" class="btn btn-primary btn-user btn-block mb-1 mt-2">
+                                Submit
+                            </button>
+                        </form>
+                    </div>
+                </div>
 
-                            <!-- SSE -->
-                            <h6 class="mb-3 mt-2 text-gray-800"><b>Biaya Penjualan & Pelayanan</b></h6>
+                <!-- SSE -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <form method="POST" id="financeFormSSE" action="{{ route('finance.addProfitLossSSE') }}">
+                            @csrf
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label for="inputMonthSSE">Bulan</label>
+                                    <select class="form-control" id="inputMonthSSE" name="month" required>
+                                        <option value="">Pilih Bulan</option>
+                                        <option value="1">Januari</option>
+                                        <option value="2">Februari</option>
+                                        <option value="3">Maret</option>
+                                        <option value="4">April</option>
+                                        <option value="5">Mei</option>
+                                        <option value="6">Juni</option>
+                                        <option value="7">Juli</option>
+                                        <option value="8">Agustus</option>
+                                        <option value="9">September</option>
+                                        <option value="10">Oktober</option>
+                                        <option value="11">November</option>
+                                        <option value="12">Desember</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <h6 class="mb-3 text-gray-800"><b>Biaya Penjualan & Pelayanan</b></h6>
                             <div class="form-row">
                                 <div class="form-group col-12 col-md-6">
                                     <label for="inputAdmEcommerceSSE">Adm online</label>
@@ -110,9 +141,40 @@
                                     </div>
                                 </div>
                             </div>
+                            <button type="submit" class="btn btn-primary btn-user btn-block mb-1 mt-2">
+                                Submit
+                            </button>
+                        </form>
+                    </div>
+                </div>
 
-                            <!-- GA -->
-                            <h6 class="mb-3 mt-2 text-gray-800"><b>Biaya Adm & Umum</b></h6>
+                <!-- GA -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <form method="POST" id="financeFormGA" action="{{ route('finance.addProfitLossGA') }}">
+                            @csrf
+                            <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label for="inputMonthGA">Bulan</label>
+                                    <select class="form-control" id="inputMonthGA" name="month" required>
+                                        <option value="">Pilih Bulan</option>
+                                        <option value="1">Januari</option>
+                                        <option value="2">Februari</option>
+                                        <option value="3">Maret</option>
+                                        <option value="4">April</option>
+                                        <option value="5">Mei</option>
+                                        <option value="6">Juni</option>
+                                        <option value="7">Juli</option>
+                                        <option value="8">Agustus</option>
+                                        <option value="9">September</option>
+                                        <option value="10">Oktober</option>
+                                        <option value="11">November</option>
+                                        <option value="12">Desember</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h6 class="mb-3 text-gray-800"><b>Biaya Adm & Umum</b></h6>
                             <div class="form-row">
                                 <div class="form-group col-12 col-md-6">
                                     <label for="inputSalariesAllowancesGA">Gaji & tunjangan</label>
@@ -224,7 +286,28 @@
             <div class="col-md-6 col-12">
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <h6 class="mb-4 text-gray-800"><b>Profit & Loss Bulan <span class="prevMonth"></span> <span id="year"></span></b></h6>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <label for="previewMonth">Bulan</label>
+                                <select class="form-control" id="previewMonth">
+                                    <option value="0">Pilih Bulan</option>
+                                    <option value="1">Januari</option>
+                                    <option value="2">Februari</option>
+                                    <option value="3">Maret</option>
+                                    <option value="4">April</option>
+                                    <option value="5">Mei</option>
+                                    <option value="6">Juni</option>
+                                    <option value="7">Juli</option>
+                                    <option value="8">Agustus</option>
+                                    <option value="9">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h6 class="mb-3 text-gray-800"><b>Profit & Loss Bulan <span class="prevMonth"></span> <span id="year"></span></b></h6>
                         <div class="table-responsive mt-4">
                             <table class="table">
                                 <thead class="table-primary">
@@ -384,7 +467,101 @@
             var date = new Date();
             var year = date.getFullYear();
 
-            $('#month').on('change', (event) => {
+            // Left card COGS
+            $('#inputMonthCOGS').on('change', (event) => {
+                // Get data preview
+                $.ajax({
+                    type: "GET",
+                    url: "/finance/profit-loss/get-profit-loss-cogs/" + event.target.value,
+                    success: function(res) {
+                        if (res.status && res.data.cogs) {
+                            var action = "{{ route('finance.updateProfitLossCOGS') }}?cogsID=" + res.data.cogs.id;
+                            $('#financeFormCOGS').attr('action', action);
+
+                            $('#inputRawMaterialCOGS').val(res.data.cogs.raw_material);
+                            $('#inputManpowerCOGS').val(res.data.cogs.manpower);
+                            $('#inputFactoryOverheadCOGS').val(res.data.cogs.factory_overhead);
+                        } else if (!res.status || res.data.cogs === null) {
+                            $('#financeFormCOGS').attr('action', "{{ route('finance.addProfitLossCOGS') }}");
+                            
+                            $('#inputRawMaterialCOGS').val('');
+                            $('#inputManpowerCOGS').val('');
+                            $('#inputFactoryOverheadCOGS').val('');
+                        }
+                    }
+                });
+            });
+
+            // Left card SSE
+            $('#inputMonthSSE').on('change', (event) => {
+                // Get data preview
+                $.ajax({
+                    type: "GET",
+                    url: "/finance/profit-loss/get-profit-loss-sse/" + event.target.value,
+                    success: function(res) {
+                        if (res.status && res.data.sse) {
+                            var action = "{{ route('finance.updateProfitLossSSE') }}?sseID=" + res.data.sse.id;
+                            $('#financeFormSSE').attr('action', action);
+
+                            $('#inputAdmEcommerceSSE').val(res.data.sse.adm_ecommerce);
+                            $('#inputMarketingSalarySSE').val(res.data.sse.marketing_salary);
+                            $('#inputMarketingOperationsSSE').val(res.data.sse.marketing_operations);
+                            $('#inputOtherCostSSE').val(res.data.sse.other_cost);
+                        } else if (!res.status || res.data.sse === null) {
+                            $('#financeFormSSE').attr('action', "{{ route('finance.addProfitLossSSE') }}");
+                            
+                            $('#inputAdmEcommerceSSE').val('');
+                            $('#inputMarketingSalarySSE').val('');
+                            $('#inputMarketingOperationsSSE').val('');
+                            $('#inputOtherCostSSE').val('');
+                        }
+                    }
+                });
+            });
+
+            // Left card GA
+            $('#inputMonthGA').on('change', (event) => {
+                // Get data preview
+                $.ajax({
+                    type: "GET",
+                    url: "/finance/profit-loss/get-profit-loss-ga/" + event.target.value,
+                    success: function(res) {
+                        if (res.status && res.data.gac) {
+                            var action = "{{ route('finance.updateProfitLossGA') }}?gacID=" + res.data.gac.id;
+                            $('#financeFormGA').attr('action', action);
+
+                            $('#inputSalariesAllowancesGA').val(res.data.gac.salaries_and_allowances);
+                            $('#inputElectricityWaterGA').val(res.data.gac.electricity_and_water);
+                            $('#inputTransportationGA').val(res.data.gac.transportation);
+                            $('#inputCommunicationGA').val(res.data.gac.communication);
+                            $('#inputOfficeStationeryGA').val(res.data.gac.office_stationery);
+                            $('#inputConsultantGA').val(res.data.gac.consultant);
+                            $('#inputCleanlinessSecurityGA').val(res.data.gac.cleanliness_and_security);
+                            $('#inputMaintenanceRenovationGA').val(res.data.gac.maintenance_and_renovation);
+                            $('#inputDepreciationGA').val(res.data.gac.depreciation);
+                            $('#inputTaxGA').val(res.data.gac.tax);
+                            $('#inputOtherCostGA').val(res.data.gac.other_cost);
+                        } else if (!res.status || res.data.gac === null) {
+                            $('#financeFormGA').attr('action', "{{ route('finance.addProfitLossGA') }}");
+                            
+                            $('#inputSalariesAllowancesGA').val('');
+                            $('#inputElectricityWaterGA').val('');
+                            $('#inputTransportationGA').val('');
+                            $('#inputCommunicationGA').val('');
+                            $('#inputOfficeStationeryGA').val('');
+                            $('#inputConsultantGA').val('');
+                            $('#inputCleanlinessSecurityGA').val('');
+                            $('#inputMaintenanceRenovationGA').val('');
+                            $('#inputDepreciationGA').val('');
+                            $('#inputTaxGA').val('');
+                            $('#inputOtherCostGA').val('');
+                        }
+                    }
+                });
+            });
+
+            // Right card
+            $('#previewMonth').on('change', (event) => {
                 $('#year').text(year);
                 if (event.target.value == 1) {
                     $('.prevMonth').text('Januari');
@@ -421,30 +598,6 @@
                     url: "/finance/profit-loss/get-profit-loss/" + event.target.value,
                     success: function(res) {
                         if (res.status && (res.data.cogs && res.data.sse && res.data.gac)) {
-                            var action = "{{ route('finance.updateProfitLoss') }}?cogsID=" + res.data.cogs.id + "&sseID=" + res.data.sse.id + "&gacID=" + res.data.gac.id;
-                            $('#financeForm').attr('action', action);
-
-                            // Card left
-                            $('#inputRawMaterialCOGS').val(res.data.cogs.raw_material);
-                            $('#inputManpowerCOGS').val(res.data.cogs.manpower);
-                            $('#inputFactoryOverheadCOGS').val(res.data.cogs.factory_overhead);
-                            $('#inputAdmEcommerceSSE').val(res.data.sse.adm_ecommerce);
-                            $('#inputMarketingSalarySSE').val(res.data.sse.marketing_salary);
-                            $('#inputMarketingOperationsSSE').val(res.data.sse.marketing_operations);
-                            $('#inputOtherCostSSE').val(res.data.sse.other_cost);
-                            $('#inputSalariesAllowancesGA').val(res.data.gac.salaries_and_allowances);
-                            $('#inputElectricityWaterGA').val(res.data.gac.electricity_and_water);
-                            $('#inputTransportationGA').val(res.data.gac.transportation);
-                            $('#inputCommunicationGA').val(res.data.gac.communication);
-                            $('#inputOfficeStationeryGA').val(res.data.gac.office_stationery);
-                            $('#inputConsultantGA').val(res.data.gac.consultant);
-                            $('#inputCleanlinessSecurityGA').val(res.data.gac.cleanliness_and_security);
-                            $('#inputMaintenanceRenovationGA').val(res.data.gac.maintenance_and_renovation);
-                            $('#inputDepreciationGA').val(res.data.gac.depreciation);
-                            $('#inputTaxGA').val(res.data.gac.tax);
-                            $('#inputOtherCostGA').val(res.data.gac.other_cost);
-
-                            // Card right
                             $('#rawMaterialCOGS').html(formatRupiah(res.data.cogs.raw_material));
                             $('#manpowerCOGS').html(formatRupiah(res.data.cogs.manpower));
                             $('#factoryOverheadCOGS').html(formatRupiah(res.data.cogs.factory_overhead));
@@ -464,29 +617,6 @@
                             $('#taxGAC').html(formatRupiah(res.data.gac.tax));
                             $('#otherCostGAC').html(formatRupiah(res.data.gac.other_cost));
                         } else if (!res.status || (res.data.cogs === null && res.data.sse === null && res.data.gac === null)) {
-                            $('#financeForm').attr('action', "{{ route('finance.addProfitLoss') }}");
-                            
-                            // Card left
-                            $('#inputRawMaterialCOGS').val('');
-                            $('#inputManpowerCOGS').val('');
-                            $('#inputFactoryOverheadCOGS').val('');
-                            $('#inputAdmEcommerceSSE').val('');
-                            $('#inputMarketingSalarySSE').val('');
-                            $('#inputMarketingOperationsSSE').val('');
-                            $('#inputOtherCostSSE').val('');
-                            $('#inputSalariesAllowancesGA').val('');
-                            $('#inputElectricityWaterGA').val('');
-                            $('#inputTransportationGA').val('');
-                            $('#inputCommunicationGA').val('');
-                            $('#inputOfficeStationeryGA').val('');
-                            $('#inputConsultantGA').val('');
-                            $('#inputCleanlinessSecurityGA').val('');
-                            $('#inputMaintenanceRenovationGA').val('');
-                            $('#inputDepreciationGA').val('');
-                            $('#inputTaxGA').val('');
-                            $('#inputOtherCostGA').val('');
-
-                            // Card right
                             $('#rawMaterialCOGS').html("Rp 0");
                             $('#manpowerCOGS').html("Rp 0");
                             $('#factoryOverheadCOGS').html("Rp 0");

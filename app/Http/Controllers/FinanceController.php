@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\Auth;
 
 class FinanceController extends Controller
 {
-    public function index()
-    {
-        return view('Finance_Apps.pages.manage.index');
-    }
-
     private function strToIntr($str)
     {
         $string = str_replace('.', '', $str);
@@ -293,18 +288,177 @@ class FinanceController extends Controller
         }
     }
 
-    public function addProfitLoss(Request $request)
+    public function getProfitLossCOGS($month)
+    {
+        $year = date("Y");
+
+        if ($month != 0) {
+            // Get COGS
+            $cogs = CostOfGoodsSold::where('user_id', Auth::user()->id)
+                ->where('month', $month)
+                ->whereYear('created_at', '=', $year)
+                ->first();
+
+            return response()->json([
+                'status'    => true,
+                'data'      => [
+                    'cogs'  => $cogs
+                ],
+            ]);
+        } else {
+            return response()->json([
+                'status'    => false,
+            ]);
+        }
+    }
+
+    public function addProfitLossCOGS(Request $request)
+    {
+        // Validation data
+        $validation = $request->validate([
+            'month'                 => 'required',
+            'rawMaterialCOGS'       => 'required',
+            'manpowerCOGS'          => 'required',
+            'factoryOverheadCOGS'   => 'required',
+        ]);
+
+        // Insert COGS
+        CostOfGoodsSold::create([
+            'user_id'           => Auth::user()->id,
+            'month'             => $this->strToIntr($validation['month']),
+            'raw_material'      => $this->strToIntr($validation['rawMaterialCOGS']),
+            'manpower'          => $this->strToIntr($validation['manpowerCOGS']),
+            'factory_overhead'  => $this->strToIntr($validation['factoryOverheadCOGS']),
+        ])->save();
+
+        return redirect()->back();
+    }
+
+    public function updateProfitLossCOGS(Request $request)
+    {
+        // Get data
+        $cogsID = $request->input('cogsID');
+        $cost_of_goods_sold = CostOfGoodsSold::where('id', $cogsID)->first();
+
+        // Validation data
+        $validation = $request->validate([
+            'rawMaterialCOGS'       => 'required',
+            'manpowerCOGS'          => 'required',
+            'factoryOverheadCOGS'   => 'required',
+        ]);
+
+        // Update COGS
+        $cost_of_goods_sold->update([
+            'raw_material'      => $this->strToIntr($validation['rawMaterialCOGS']),
+            'manpower'          => $this->strToIntr($validation['manpowerCOGS']),
+            'factory_overhead'  => $this->strToIntr($validation['factoryOverheadCOGS']),
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function getProfitLossSSE($month)
+    {
+        $year = date("Y");
+
+        if ($month != 0) {
+            // Get SSE
+            $sse = SellingServiceExpenses::where('user_id', Auth::user()->id)
+                ->where('month', $month)
+                ->whereYear('created_at', '=', $year)
+                ->first();
+
+            return response()->json([
+                'status'    => true,
+                'data'      => [
+                    'sse'  => $sse
+                ],
+            ]);
+        } else {
+            return response()->json([
+                'status'    => false,
+            ]);
+        }
+    }
+
+    public function addProfitLossSSE(Request $request)
     {
         // Validation data
         $validation = $request->validate([
             'month'                     => 'required',
-            'rawMaterialCOGS'           => 'required',
-            'manpowerCOGS'              => 'required',
-            'factoryOverheadCOGS'       => 'required',
             'admEcommerceSSE'           => 'required',
             'marketingSalarySSE'        => 'required',
             'marketingOperationsSSE'    => 'required',
             'otherCostSSE'              => 'required',
+        ]);
+
+        // Insert SSE
+        SellingServiceExpenses::create([
+            'user_id'               => Auth::user()->id,
+            'month'                 => $this->strToIntr($validation['month']),
+            'adm_ecommerce'         => $this->strToIntr($validation['admEcommerceSSE']),
+            'marketing_salary'      => $this->strToIntr($validation['marketingSalarySSE']),
+            'marketing_operations'  => $this->strToIntr($validation['marketingOperationsSSE']),
+            'other_cost'            => $this->strToIntr($validation['otherCostSSE']),
+        ])->save();
+
+        return redirect()->back();
+    }
+
+    public function updateProfitLossSSE(Request $request)
+    {
+        // Get data
+        $sseID = $request->input('sseID');
+        $selling_service_expenses = SellingServiceExpenses::where('id', $sseID)->first();
+
+        // Validation data
+        $validation = $request->validate([
+            'admEcommerceSSE'           => 'required',
+            'marketingSalarySSE'        => 'required',
+            'marketingOperationsSSE'    => 'required',
+            'otherCostSSE'              => 'required',
+        ]);
+
+        // Update SSE
+        $selling_service_expenses->update([
+            'adm_ecommerce'         => $this->strToIntr($validation['admEcommerceSSE']),
+            'marketing_salary'      => $this->strToIntr($validation['marketingSalarySSE']),
+            'marketing_operations'  => $this->strToIntr($validation['marketingOperationsSSE']),
+            'other_cost'            => $this->strToIntr($validation['otherCostSSE']),
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function getProfitLossGA($month)
+    {
+        $year = date("Y");
+
+        if ($month != 0) {
+            // Get GAC
+            $gac = GeneralAdminCost::where('user_id', Auth::user()->id)
+                ->where('month', $month)
+                ->whereYear('created_at', '=', $year)
+                ->first();
+
+            return response()->json([
+                'status'    => true,
+                'data'      => [
+                    'gac'  => $gac
+                ],
+            ]);
+        } else {
+            return response()->json([
+                'status'    => false,
+            ]);
+        }
+    }
+
+    public function addProfitLossGA(Request $request)
+    {
+        // Validation data
+        $validation = $request->validate([
+            'month'                     => 'required',
             'salariesAllowancesGA'      => 'required',
             'electricityWaterGA'        => 'required',
             'transportationGA'          => 'required',
@@ -317,25 +471,6 @@ class FinanceController extends Controller
             'taxGA'                     => 'required',
             'otherCostGA'               => 'required',
         ]);
-
-        // Insert COGS
-        CostOfGoodsSold::create([
-            'user_id'           => Auth::user()->id,
-            'month'             => $this->strToIntr($validation['month']),
-            'raw_material'      => $this->strToIntr($validation['rawMaterialCOGS']),
-            'manpower'          => $this->strToIntr($validation['manpowerCOGS']),
-            'factory_overhead'  => $this->strToIntr($validation['factoryOverheadCOGS']),
-        ])->save();
-
-        // Insert SSE
-        SellingServiceExpenses::create([
-            'user_id'               => Auth::user()->id,
-            'month'                 => $this->strToIntr($validation['month']),
-            'adm_ecommerce'         => $this->strToIntr($validation['admEcommerceSSE']),
-            'marketing_salary'      => $this->strToIntr($validation['marketingSalarySSE']),
-            'marketing_operations'  => $this->strToIntr($validation['marketingOperationsSSE']),
-            'other_cost'            => $this->strToIntr($validation['otherCostSSE']),
-        ])->save();
 
         // Insert GAC
         GeneralAdminCost::create([
@@ -357,25 +492,14 @@ class FinanceController extends Controller
         return redirect()->back();
     }
 
-    public function updateProfitLoss(Request $request)
+    public function updateProfitLossGA(Request $request)
     {
         // Get data
-        $cogsID = $request->input('cogsID');
-        $sseID = $request->input('sseID');
         $gacID = $request->input('gacID');
-        $cost_of_goods_sold = CostOfGoodsSold::where('id', $cogsID)->first();
-        $selling_service_expenses = SellingServiceExpenses::where('id', $sseID)->first();
         $general_admin_cost = GeneralAdminCost::where('id', $gacID)->first();
 
         // Validation data
         $validation = $request->validate([
-            'rawMaterialCOGS'           => 'required',
-            'manpowerCOGS'              => 'required',
-            'factoryOverheadCOGS'       => 'required',
-            'admEcommerceSSE'           => 'required',
-            'marketingSalarySSE'        => 'required',
-            'marketingOperationsSSE'    => 'required',
-            'otherCostSSE'              => 'required',
             'salariesAllowancesGA'      => 'required',
             'electricityWaterGA'        => 'required',
             'transportationGA'          => 'required',
@@ -387,21 +511,6 @@ class FinanceController extends Controller
             'depreciationGA'            => 'required',
             'taxGA'                     => 'required',
             'otherCostGA'               => 'required',
-        ]);
-
-        // Update COGS
-        $cost_of_goods_sold->update([
-            'raw_material'      => $this->strToIntr($validation['rawMaterialCOGS']),
-            'manpower'          => $this->strToIntr($validation['manpowerCOGS']),
-            'factory_overhead'  => $this->strToIntr($validation['factoryOverheadCOGS']),
-        ]);
-
-        // Update SSE
-        $selling_service_expenses->update([
-            'adm_ecommerce'         => $this->strToIntr($validation['admEcommerceSSE']),
-            'marketing_salary'      => $this->strToIntr($validation['marketingSalarySSE']),
-            'marketing_operations'  => $this->strToIntr($validation['marketingOperationsSSE']),
-            'other_cost'            => $this->strToIntr($validation['otherCostSSE']),
         ]);
 
         // Update GAC
