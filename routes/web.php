@@ -205,8 +205,15 @@ Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
     Route::prefix('/profit-loss')->group(function () {
         Route::get('/', [FinanceController::class, 'profitLoss'])->name('finance.profitLoss');
         Route::get('/get-profit-loss/{month}', [FinanceController::class, 'getProfitLoss'])->name('finance.getProfitLoss');
-        Route::post('/add-profit-loss', [FinanceController::class, 'addProfitLoss'])->name('finance.addProfitLoss');
-        Route::post('/update-profit-loss', [FinanceController::class, 'updateProfitLoss'])->name('finance.updateProfitLoss');
+        Route::get('/get-profit-loss-cogs/{month}', [FinanceController::class, 'getProfitLossCOGS'])->name('finance.getProfitLossCOGS');
+        Route::post('/add-profit-loss-cogs', [FinanceController::class, 'addProfitLossCOGS'])->name('finance.addProfitLossCOGS');
+        Route::post('/update-profit-loss-cogs', [FinanceController::class, 'updateProfitLossCOGS'])->name('finance.updateProfitLossCOGS');
+        Route::get('/get-profit-loss-sse/{month}', [FinanceController::class, 'getProfitLossSSE'])->name('finance.getProfitLossSSE');
+        Route::post('/add-profit-loss-sse', [FinanceController::class, 'addProfitLossSSE'])->name('finance.addProfitLossSSE');
+        Route::post('/update-profit-loss-sse', [FinanceController::class, 'updateProfitLossSSE'])->name('finance.updateProfitLossSSE');
+        Route::get('/get-profit-loss-ga/{month}', [FinanceController::class, 'getProfitLossGA'])->name('finance.getProfitLossGA');
+        Route::post('/add-profit-loss-ga', [FinanceController::class, 'addProfitLossGA'])->name('finance.addProfitLossGA');
+        Route::post('/update-profit-loss-ga', [FinanceController::class, 'updateProfitLossGA'])->name('finance.updateProfitLossGA');
         Route::post('/report', [FinanceController::class, 'profitLossReport'])->name('finance.profitLossReport');
     });
 
