@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\exportBalanceSheetReport;
 use App\Http\Controllers\Controller;
 use App\Models\CashIn;
 use App\Models\CostOfGoodsSold;
@@ -9,9 +10,11 @@ use App\Models\CurrentAsset;
 use App\Models\GeneralAdminCost;
 use App\Models\NonCurrentAsset;
 use App\Models\SellingServiceExpenses;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceController extends Controller
 {
@@ -183,8 +186,7 @@ class FinanceController extends Controller
             <h6 class="mb-3 text-gray-800 text-center"><b>PER TANGGAL ' . date("d/m/Y", strtotime($request->dateStart)) . ' - ' . date("d/m/Y", strtotime($request->dateEnd)) . '</b></h6>
             <table class="table">
                 <thead class="table-primary">
-                    <th><b>Aset Lancar</b></th>
-                    <th><b><span class="prevMonthCA"></b></th>
+                    <th colspan="2"><b>Aset Lancar</b></th>
                 </thead>
                 <tbody>
                     <tr>
@@ -636,6 +638,17 @@ class FinanceController extends Controller
                         <tr>
                             <td style="text-indent: 40px;">Sales</td>
                             <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
                         </tr>
                         <tr>
                             <td class="table-warning"><b>Total Sales</b></td>
@@ -716,6 +729,21 @@ class FinanceController extends Controller
                             <td class="table-warning"><b>Rp ' . (isset($totalHPP[11]) ? number_format($totalHPP[11], 0, ',', '.') : "0") . '</b></td>
                         </tr>
                         <tr>
+                            <td class="table-info"><b>Gross Profit/Loss</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[0]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[1]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[2]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[3]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[4]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[5]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[6]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[7]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[8]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[9]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[10]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[11]), 0, ',', '.')) . '</b></td>
+                        </tr>
+                        <tr>
                             <td colspan="13" class="table-secondary"><b>BI. Penjualan</b></td>
                         </tr>
                         <tr>
@@ -792,6 +820,21 @@ class FinanceController extends Controller
                             <td class="table-warning"><b>Rp ' . (isset($totalSSE[9]) ? number_format($totalSSE[9], 0, ',', '.') : "0") . '</b></td>
                             <td class="table-warning"><b>Rp ' . (isset($totalSSE[10]) ? number_format($totalSSE[10], 0, ',', '.') : "0") . '</b></td>
                             <td class="table-warning"><b>Rp ' . (isset($totalSSE[11]) ? number_format($totalSSE[11], 0, ',', '.') : "0") . '</b></td>
+                        </tr>
+                        <tr>
+                            <td class="table-info"><b>Operating Income (After Sales and Service Exp.)</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[0] - $totalSSE[0]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[1] - $totalSSE[1]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[2] - $totalSSE[2]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[3] - $totalSSE[3]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[4] - $totalSSE[4]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[5] - $totalSSE[5]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[6] - $totalSSE[6]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[7] - $totalSSE[7]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[8] - $totalSSE[8]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[9] - $totalSSE[9]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[10] - $totalSSE[10]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[11] - $totalSSE[11]), 0, ',', '.')) . '</b></td>
                         </tr>
                         <tr>
                             <td colspan="13" class="table-secondary"><b>BI. Adm & Umum</b></td>
@@ -976,11 +1019,27 @@ class FinanceController extends Controller
                             <td class="table-warning"><b>Rp ' . (isset($totalGAC[10]) ? number_format($totalGAC[10], 0, ',', '.') : "0") . '</b></td>
                             <td class="table-warning"><b>Rp ' . (isset($totalGAC[11]) ? number_format($totalGAC[11], 0, ',', '.') : "0") . '</b></td>
                         </tr>
+                        <tr>
+                            <td class="table-info"><b>Net Operating Income</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[0] - $totalSSE[0] - $totalGAC[0]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[1] - $totalSSE[1] - $totalGAC[1]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[2] - $totalSSE[2] - $totalGAC[2]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[3] - $totalSSE[3] - $totalGAC[3]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[4] - $totalSSE[4] - $totalGAC[4]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[5] - $totalSSE[5] - $totalGAC[5]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[6] - $totalSSE[6] - $totalGAC[6]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[7] - $totalSSE[7] - $totalGAC[7]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[8] - $totalSSE[8] - $totalGAC[8]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[9] - $totalSSE[9] - $totalGAC[9]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[10] - $totalSSE[10] - $totalGAC[10]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[11] - $totalSSE[11] - $totalGAC[11]), 0, ',', '.')) . '</b></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
 
-            <form action="" method="GET">
+            <form action="' . route('report.exportProfitLoss') . '" method="GET">
+                <input type="text" name="year" value="' . $request->year . '" hidden>
                 <button type="submit" class="btn btn-warning btn-user px-5">
                     Export Laporan
                 </button>
