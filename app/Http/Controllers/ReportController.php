@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\exportBalanceSheetReport;
+use App\Exports\exportCashFlowReport;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Exports\exportOrderReportByProduct;
 use App\Exports\exportOrderReportByCustomer;
 use App\Exports\exportOrderReportByStatus;
 use App\Exports\exportOrderReportByDate;
+use App\Exports\exportProfitLossReport;
 use App\Models\OrderReport;
 use App\Models\Product;
 use Carbon\Carbon;
@@ -487,25 +490,24 @@ class ReportController extends Controller
     public function exportBalanceSheet(Request $request)
     {
         $currentDate = Carbon::now();
-        // dd($currentDate);
         $filename = ("balance_sheet_report_" . $currentDate . ".xlsx");
 
-        Excel::store(new exportOrderReportByDate($request->dateStart, $request->dateEnd), $filename, 'report');
-        $report = OrderReport::create([
-            'user_id' => Auth::user()->id,
-            'report' => $filename,
-            'report_date' => Carbon::now(),
-        ]);
-        $report->save();
-
-        return Excel::download(new exportOrderReportByDate($request->dateStart, $request->dateEnd), $filename);
+        return Excel::download(new exportBalanceSheetReport($request->dateStart, $request->dateEnd), $filename);
     }
 
-    public function exportCashFlow()
+    public function exportProfitLoss(Request $request)
     {
+        $currentDate = Carbon::now();
+        $filename = ("profit_loss_report_" . $currentDate . ".xlsx");
+
+        return Excel::download(new exportProfitLossReport($request->year), $filename);
     }
 
-    public function exportProfitLoss()
+    public function exportCashFlow(Request $request)
     {
+        $currentDate = Carbon::now();
+        $filename = ("cash_flow_report_" . $currentDate . ".xlsx");
+
+        return Excel::download(new exportCashFlowReport($request->year), $filename);
     }
 }
