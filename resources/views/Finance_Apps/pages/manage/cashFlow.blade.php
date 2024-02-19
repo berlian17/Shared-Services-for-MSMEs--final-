@@ -11,43 +11,31 @@
             <h1 class="h3 mb-0 text-gray-800">Cash Flow</h1>
         </div>
 
-        <div class="card shadow mb-4">
-            <div class="card-body">
-                <form method="POST" id="financeForm" action="{{ route('finance.addCashFlow') }}">
-                    @csrf
-                    <div class="form-row">
-                        <div class="form-group col-md-6 col-12">
-                            <label for="inputMonth">Bulan</label>
-                            <select class="form-control" id="month" name="month" required>
-                                <option value="">Pilih Bulan</option>
-                                <option value="1">Januari</option>
-                                <option value="2">Februari</option>
-                                <option value="3">Maret</option>
-                                <option value="4">April</option>
-                                <option value="5">Mei</option>
-                                <option value="6">Juni</option>
-                                <option value="7">Juli</option>
-                                <option value="8">Agustus</option>
-                                <option value="9">September</option>
-                                <option value="10">Oktober</option>
-                                <option value="11">November</option>
-                                <option value="12">Desember</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6 col-12">
-                            <label for="inputCashCI">Cash In</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">Rp</div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <form method="POST" id="financeForm" action="{{ route('finance.addCashFlow') }}">
+                            @csrf
+                            <div class="form-row">
+                                <div class="form-group col-md-8 col-12">
+                                    <label for="inputCashCI">Cash In Bulan Januari Tahun {{ $year }}</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">Rp</div>
+                                        </div>
+                                        <input type="text" class="form-control rupiah" name="cashCI" id="inputCashCI" value="{{ $ci ? $ci->cash : old('cashCI') }}" min="0" required>
+                                    </div>
                                 </div>
-                                <input type="text" class="form-control rupiah" name="cashCI" id="inputCashCI" value="{{ old('cashCI') }}" min="0" required>
+                                <div class="col-md-4 col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary btn-user btn-block mt-3">
+                                        Submit
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-user btn-block mb-1 mt-2">
-                        Submit
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
 
@@ -111,23 +99,23 @@
         }
 
         $(document).ready(function() {
-            $('#month').on('change', (event) => {
-                // Get data preview
+            var ci = $('#inputCashCI').val();
+
+            if (ci) {
+                // Get data
                 $.ajax({
                     type: "GET",
-                    url: "/finance/cash-flow/get-cash-flow/" + event.target.value,
+                    url: "/finance/cash-flow/get-cash-flow/<?php echo $year; ?>",
                     success: function(res) {
                         if (res.status && res.data.ci) {
                             var action = "{{ route('finance.updateCashFlow') }}?ciID=" + res.data.ci.id;
                             $('#financeForm').attr('action', action);
-                            $('#inputCashCI').val(res.data.ci.cash);
                         } else if (!res.status || res.data.ci === null) {
                             $('#financeForm').attr('action', "{{ route('finance.addCashFlow') }}");
-                            $('#inputCashCI').val('');
                         }
                     }
                 });
-            });
+            }
 
             // Format rupiah
             $('.rupiah').on('input', function() {

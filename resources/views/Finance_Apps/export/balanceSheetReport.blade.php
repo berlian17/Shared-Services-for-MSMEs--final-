@@ -10,7 +10,7 @@
     </thead>
     <tbody>
         <tr>
-            <td class="table-primary" colspan="3"><b>Aset Lancar</b></td>
+            <td colspan="3"><b>Aset Lancar</b></td>
         </tr>
         <tr>
             <td></td>
@@ -37,7 +37,7 @@
             <td><b>{{ $totalCA }}</b></td>
         </tr>
         <tr>
-            <td class="table-primary" colspan="3"><b>Aset Tidak Lancar</b></td>
+            <td colspan="3"><b>Aset Tidak Lancar</b></td>
         </tr>
         <tr>
             <td></td>
@@ -54,8 +54,8 @@
             <td><b>{{ $totalNCA }}</b></td>
         </tr>
         <tr>
-            <td class="table-warning" colspan="2"><b>Jumlah aset</b></td>
-            <td class="table-warning"><b>{{ $totalAsset }}</b></td>
+            <td colspan="2"><b>Jumlah aset</b></td>
+            <td><b>{{ $totalAsset }}</b></td>
         </tr>
     </tbody>
 </table>

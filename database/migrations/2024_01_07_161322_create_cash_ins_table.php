@@ -16,7 +16,7 @@ class CreateCashInsTable extends Migration
         Schema::create('cash_ins', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->smallInteger('month');
+            $table->smallInteger('year');
             $table->double('cash');
             $table->timestamps();
         });

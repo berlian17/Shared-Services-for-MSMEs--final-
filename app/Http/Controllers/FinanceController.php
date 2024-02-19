@@ -9,6 +9,7 @@ use App\Models\CostOfGoodsSold;
 use App\Models\CurrentAsset;
 use App\Models\GeneralAdminCost;
 use App\Models\NonCurrentAsset;
+use App\Models\OrderDetail;
 use App\Models\SellingServiceExpenses;
 use Carbon\Carbon;
 use DateTime;
@@ -178,7 +179,7 @@ class FinanceController extends Controller
         }
 
         $totalCA = $cashCA + $accountsReceivableCA + $suppliesCA + $otherCA;
-        $totalNCA = $fixedAssetsNCA + $depreciationNCA;
+        $totalNCA = $fixedAssetsNCA - $depreciationNCA;
         $totalAsset = $totalCA + $totalNCA;
 
         $html .= '
@@ -206,8 +207,8 @@ class FinanceController extends Controller
                         <td>Rp ' .  number_format($otherCA, 0, ',', '.') . '</td>
                     </tr>
                     <tr>
-                        <td><b>Jumlah aset lancar</b></td>
-                        <td><b>Rp ' .  number_format($totalCA, 0, ',', '.') . '</b></td>
+                        <td class="table-warning"><b>Jumlah aset lancar</b></td>
+                        <td class="table-warning"><b>Rp ' .  number_format($totalCA, 0, ',', '.') . '</b></td>
                     </tr>
                     <tr>
                         <td class="table-primary"><b>Aset Tidak Lancar</b></td>
@@ -219,15 +220,15 @@ class FinanceController extends Controller
                     </tr>
                     <tr>
                         <td style="text-indent: 40px;">Akumulasi penyusutan</td>
-                        <td>Rp ' .  number_format($depreciationNCA, 0, ',', '.') . '</td>
+                        <td>(Rp ' .  number_format($depreciationNCA, 0, ',', '.') . ')</td>
                     </tr>
                     <tr>
-                        <td><b>Jumlah aset tidak lancar</b></td>
-                        <td><b>Rp ' .  number_format($totalNCA, 0, ',', '.') . '</b></td>
+                        <td class="table-warning"><b>Jumlah aset tidak lancar</b></td>
+                        <td class="table-warning"><b>Rp ' .  number_format($totalNCA, 0, ',', '.') . '</b></td>
                     </tr>
                     <tr>
-                        <td class="table-warning"><b>Jumlah aset</b></td>
-                        <td class="table-warning" id="totalAsset"><b>Rp ' .  number_format($totalAsset, 0, ',', '.') . '</b></td>
+                        <td class="table-info"><b>Jumlah aset</b></td>
+                        <td class="table-info" id="totalAsset"><b>Rp ' .  number_format($totalAsset, 0, ',', '.') . '</b></td>
                     </tr>
                 </tbody>
             </table>
@@ -536,6 +537,10 @@ class FinanceController extends Controller
     public function profitLossReport(Request $request)
     {
         // Get data
+        $sales = OrderDetail::select('order_details.*', 'orders.order_date')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->whereYear('orders.order_date', '=', $request->year)
+            ->get();
         $cogs = CostOfGoodsSold::where('user_id', Auth::user()->id)
             ->whereYear('created_at', '=', $request->year)
             ->get();
@@ -546,6 +551,19 @@ class FinanceController extends Controller
             ->whereYear('created_at', '=', $request->year)
             ->get();
         $html = '';
+
+        // sales
+        $salesMonth = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $salesMonth[str_pad($i, 2, '0', STR_PAD_LEFT)] = 0;
+        }
+
+        foreach ($sales as $sale) {
+            $month = (new DateTime($sale->order_date))->format('m');
+            $totalSales = $sale->total_price;
+
+            $salesMonth[$month] += $totalSales;
+        }
 
         // cogs
         $cogsArray = [];
@@ -610,6 +628,34 @@ class FinanceController extends Controller
             }
         }
 
+        // net
+        $net1 = ($salesMonth["01"] - $totalHPP[0] - $totalSSE[0] - $totalGAC[0]);
+        $net2 = $salesMonth["02"] != 0 ? $net1 + ($salesMonth["02"] - $totalHPP[1] - $totalSSE[1] - $totalGAC[1]) : 0;
+        $net3 = $salesMonth["03"] != 0 ? $net2 + ($salesMonth["03"] - $totalHPP[2] - $totalSSE[2] - $totalGAC[2]) : 0;
+        $net4 = $salesMonth["04"] != 0 ? $net3 + ($salesMonth["04"] - $totalHPP[3] - $totalSSE[3] - $totalGAC[3]) : 0;
+        $net5 = $salesMonth["05"] != 0 ? $net4 + ($salesMonth["05"] - $totalHPP[4] - $totalSSE[4] - $totalGAC[4]) : 0;
+        $net6 = $salesMonth["06"] != 0 ? $net5 + ($salesMonth["06"] - $totalHPP[5] - $totalSSE[5] - $totalGAC[5]) : 0;
+        $net7 = $salesMonth["07"] != 0 ? $net6 + ($salesMonth["07"] - $totalHPP[6] - $totalSSE[6] - $totalGAC[6]) : 0;
+        $net8 = $salesMonth["08"] != 0 ? $net7 + ($salesMonth["08"] - $totalHPP[7] - $totalSSE[7] - $totalGAC[7]) : 0;
+        $net9 = $salesMonth["09"] != 0 ? $net8 + ($salesMonth["09"] - $totalHPP[8] - $totalSSE[8] - $totalGAC[8]) : 0;
+        $net10 = $salesMonth["10"] != 0 ? $net9 + ($salesMonth["10"] - $totalHPP[9] - $totalSSE[9] - $totalGAC[9]) : 0;
+        $net11 = $salesMonth["11"] != 0 ? $net10 + ($salesMonth["11"] - $totalHPP[10] - $totalSSE[10] - $totalGAC[10]) : 0;
+        $net12 = $salesMonth["12"] != 0 ? $net11 + ($salesMonth["12"] - $totalHPP[11] - $totalSSE[11] - $totalGAC[11]) : 0;
+
+        // gross
+        $gross1 = $salesMonth["01"] - $totalHPP[0];
+        $gross2 = $salesMonth["02"] != 0 ? $net1 + $salesMonth["02"] - $totalHPP[1] : 0;
+        $gross3 = $salesMonth["03"] != 0 ? $net2 + $salesMonth["03"] - $totalHPP[2] : 0;
+        $gross4 = $salesMonth["04"] != 0 ? $net3 + $salesMonth["04"] - $totalHPP[3] : 0;
+        $gross5 = $salesMonth["05"] != 0 ? $net4 + $salesMonth["05"] - $totalHPP[4] : 0;
+        $gross6 = $salesMonth["06"] != 0 ? $net5 + $salesMonth["06"] - $totalHPP[5] : 0;
+        $gross7 = $salesMonth["07"] != 0 ? $net6 + $salesMonth["07"] - $totalHPP[6] : 0;
+        $gross8 = $salesMonth["08"] != 0 ? $net7 + $salesMonth["08"] - $totalHPP[7] : 0;
+        $gross9 = $salesMonth["09"] != 0 ? $net8 + $salesMonth["09"] - $totalHPP[8] : 0;
+        $gross10 = $salesMonth["10"] != 0 ? $net9 + $salesMonth["10"] - $totalHPP[9] : 0;
+        $gross11 = $salesMonth["11"] != 0 ? $net10 + $salesMonth["11"] - $totalHPP[10] : 0;
+        $gross12 = $salesMonth["12"] != 0 ? $net11 + $salesMonth["12"] - $totalHPP[11] : 0;
+
         $html .= '
             <h6 class="mb-3 text-gray-800 text-center"><b>PROFIT & LOSS</b></h6>
             <h6 class="mb-3 text-gray-800 text-center"><b>TAHUN ' . $request->year . '</b></h6>
@@ -637,33 +683,33 @@ class FinanceController extends Controller
                         </tr>
                         <tr>
                             <td style="text-indent: 40px;">Sales</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
-                            <td>Rp ' . number_format(0, 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["01"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["02"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["03"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["04"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["05"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["06"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["07"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["08"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["09"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["10"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["11"], 0, ',', '.') . '</td>
+                            <td>Rp ' . number_format($salesMonth["12"], 0, ',', '.') . '</td>
                         </tr>
                         <tr>
                             <td class="table-warning"><b>Total Sales</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
-                            <td class="table-warning"><b>Rp ' . number_format(0, 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["01"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["02"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["03"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["04"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["05"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["06"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["07"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["08"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["09"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["10"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["11"], 0, ',', '.') . '</b></td>
+                            <td class="table-warning"><b>Rp ' . number_format($salesMonth["12"], 0, ',', '.') . '</b></td>
                         </tr>
                         <tr>
                             <td colspan="13" class="table-secondary"><b>HPP</b></td>
@@ -730,18 +776,18 @@ class FinanceController extends Controller
                         </tr>
                         <tr>
                             <td class="table-info"><b>Gross Profit/Loss</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[0]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[1]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[2]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[3]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[4]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[5]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[6]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[7]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[8]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[9]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[10]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[11]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross1, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross2, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross3, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross4, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross5, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross6, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross7, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross8, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross9, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross10, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross11, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($gross12, 0, ',', '.')) . '</b></td>
                         </tr>
                         <tr>
                             <td colspan="13" class="table-secondary"><b>BI. Penjualan</b></td>
@@ -823,18 +869,18 @@ class FinanceController extends Controller
                         </tr>
                         <tr>
                             <td class="table-info"><b>Operating Income (After Sales and Service Exp.)</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[0] - $totalSSE[0]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[1] - $totalSSE[1]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[2] - $totalSSE[2]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[3] - $totalSSE[3]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[4] - $totalSSE[4]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[5] - $totalSSE[5]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[6] - $totalSSE[6]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[7] - $totalSSE[7]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[8] - $totalSSE[8]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[9] - $totalSSE[9]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[10] - $totalSSE[10]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[11] - $totalSSE[11]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["01"] - $totalHPP[0] - $totalSSE[0]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["02"] - $totalHPP[1] - $totalSSE[1]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["03"] - $totalHPP[2] - $totalSSE[2]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["04"] - $totalHPP[3] - $totalSSE[3]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["05"] - $totalHPP[4] - $totalSSE[4]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["06"] - $totalHPP[5] - $totalSSE[5]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["07"] - $totalHPP[6] - $totalSSE[6]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["08"] - $totalHPP[7] - $totalSSE[7]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["09"] - $totalHPP[8] - $totalSSE[8]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["10"] - $totalHPP[9] - $totalSSE[9]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["11"] - $totalHPP[10] - $totalSSE[10]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format(($salesMonth["12"] - $totalHPP[11] - $totalSSE[11]), 0, ',', '.')) . '</b></td>
                         </tr>
                         <tr>
                             <td colspan="13" class="table-secondary"><b>BI. Adm & Umum</b></td>
@@ -1021,18 +1067,18 @@ class FinanceController extends Controller
                         </tr>
                         <tr>
                             <td class="table-info"><b>Net Operating Income</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[0] - $totalSSE[0] - $totalGAC[0]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[1] - $totalSSE[1] - $totalGAC[1]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[2] - $totalSSE[2] - $totalGAC[2]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[3] - $totalSSE[3] - $totalGAC[3]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[4] - $totalSSE[4] - $totalGAC[4]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[5] - $totalSSE[5] - $totalGAC[5]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[6] - $totalSSE[6] - $totalGAC[6]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[7] - $totalSSE[7] - $totalGAC[7]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[8] - $totalSSE[8] - $totalGAC[8]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[9] - $totalSSE[9] - $totalGAC[9]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[10] - $totalSSE[10] - $totalGAC[10]), 0, ',', '.')) . '</b></td>
-                            <td class="table-info"><b>Rp ' . (number_format((0 - $totalHPP[11] - $totalSSE[11] - $totalGAC[11]), 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net1, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net2, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net3, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net4, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net5, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net6, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net7, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net8, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net9, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net10, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net11, 0, ',', '.')) . '</b></td>
+                            <td class="table-info"><b>Rp ' . (number_format($net12, 0, ',', '.')) . '</b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1052,23 +1098,25 @@ class FinanceController extends Controller
     // Cash Flow
     public function cashFlow()
     {
-        $years = CashIn::selectRaw('DISTINCT YEAR(created_at) as year')
-            ->pluck('year');
+        $year = date("Y");
+        $years = CashIn::pluck('year');
 
-        return view('Finance_Apps.pages.manage.cashFlow', compact('years'));
+        // Get CI
+        $ci = CashIn::where('user_id', Auth::user()->id)
+            ->where('year', $year)
+            ->first();
+
+        return view('Finance_Apps.pages.manage.cashFlow', compact('year', 'years', 'ci'));
     }
 
-    public function getCashFlow($month)
+    public function getCashFlow($year)
     {
-        $year = date("Y");
+        // Get CI
+        $ci = CashIn::where('user_id', Auth::user()->id)
+            ->where('year', $year)
+            ->first();
 
-        if ($month != 0) {
-            // Get CI
-            $ci = CashIn::where('user_id', Auth::user()->id)
-                ->where('month', $month)
-                ->whereYear('created_at', '=', $year)
-                ->first();
-
+        if ($ci) {
             return response()->json([
                 'status'    => true,
                 'data'      => [
@@ -1086,14 +1134,15 @@ class FinanceController extends Controller
     {
         // Validation data
         $validation = $request->validate([
-            'month'     => 'required',
             'cashCI'    => 'required',
         ]);
+
+        $year = date("Y");
 
         // Insert CI
         CashIn::create([
             'user_id'   => Auth::user()->id,
-            'month'     => $this->strToIntr($validation['month']),
+            'year'      => $year,
             'cash'      => $this->strToIntr($validation['cashCI']),
         ])->save();
 
@@ -1121,27 +1170,92 @@ class FinanceController extends Controller
     {
         // Get data
         $ci = CashIn::where('user_id', Auth::user()->id)
+            ->where('year', $request->year)
+            ->first();
+        $sales = OrderDetail::select('order_details.*', 'orders.order_date')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->whereYear('orders.order_date', '=', $request->year)
+            ->get();
+        $cogs = CostOfGoodsSold::where('user_id', Auth::user()->id)
+            ->whereYear('created_at', '=', $request->year)
+            ->get();
+        $sse = SellingServiceExpenses::where('user_id', Auth::user()->id)
+            ->whereYear('created_at', '=', $request->year)
+            ->get();
+        $gac = GeneralAdminCost::where('user_id', Auth::user()->id)
             ->whereYear('created_at', '=', $request->year)
             ->get();
         $html = '';
 
+        // sales
+        $salesMonth = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $salesMonth[str_pad($i, 2, '0', STR_PAD_LEFT)] = 0;
+        }
+
+        foreach ($sales as $sale) {
+            $month = (new DateTime($sale->order_date))->format('m');
+            $totalSales = $sale->total_price;
+
+            $salesMonth[$month] += $totalSales;
+        }
+
         // cogs
-        $ciArray = [];
+        $cogsArray = [];
         for ($i = 1; $i <= 12; $i++) {
             $found = false;
 
-            foreach ($ci as $data) {
+            foreach ($cogs as $data) {
                 if ($data->month == $i) {
-                    $ciArray[] = $data;
+                    $cogsArray[] = ($data->raw_material + $data->manpower + $data->factory_overhead);
                     $found = true;
                     break;
                 }
             }
 
             if (!$found) {
-                $ciArray[] = null;
+                $cogsArray[] = null;
             }
         }
+
+        // sse
+        $sseArray = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $found = false;
+
+            foreach ($sse as $data) {
+                if ($data->month == $i) {
+                    $sseArray[] = ($data->adm_ecommerce + $data->marketing_salary + $data->marketing_operations + $data->other_cost);
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $sseArray[] = null;
+            }
+        }
+
+        // gac
+        $gacArray = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $found = false;
+
+            foreach ($gac as $data) {
+                if ($data->month == $i) {
+                    $gacArray[] = ($data->salaries_and_allowances + $data->electricity_and_water + $data->transportation + $data->communication + $data->office_stationery + $data->consultant + $data->cleanliness_and_security + $data->maintenance_and_renovation + $data->depreciation + $data->tax + $data->other_cost);
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $gacArray[] = null;
+            }
+        }
+
+        // total
+        $total1 = ($ci->cash + $salesMonth["01"] - $cogsArray[0] - $sseArray[0] - $gacArray[0]);
 
         $html .= '
             <h6 class="mb-3 text-gray-800 text-center"><b>CASH FLOW</b></h6>
@@ -1167,18 +1281,27 @@ class FinanceController extends Controller
                     <tbody>
                         <tr>
                             <td>Cash In</td>
+                            <td>Rp ' . number_format($ci->cash, 0, ',', '.') . '</td>
                         </tr>
                         <tr>
                             <td>Sales</td>
+                            <td>Rp ' . number_format($salesMonth["01"], 0, ',', '.') . '</td>
                         </tr>
                         <tr>
                             <td>Cost of Goods Sold (COGS)</td>
+                            <td>(Rp ' . number_format($cogsArray[0], 0, ',', '.') . ')</td>
                         </tr>
                         <tr>
                             <td>Selling & Service Expenses (SSE)</td>
+                            <td>(Rp ' . number_format($sseArray[0], 0, ',', '.') . ')</td>
                         </tr>
                         <tr>
                             <td>General & Admin Cost (G&A)</td>
+                            <td>(Rp ' . number_format($gacArray[0], 0, ',', '.') . ')</td>
+                        </tr>
+                        <tr class="table-warning">
+                            <td></td>
+                            <td>Rp ' . number_format($total1, 0, ',', '.') . '</td>
                         </tr>
                     </tbody>
                 </table>

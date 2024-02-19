@@ -219,7 +219,7 @@ Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
 
     Route::prefix('/cash-flow')->group(function () {
         Route::get('/', [FinanceController::class, 'cashFlow'])->name('finance.cashFlow');
-        Route::get('/get-cash-flow/{month}', [FinanceController::class, 'getCashFlow'])->name('finance.getCashFlow');
+        Route::get('/get-cash-flow/{year}', [FinanceController::class, 'getCashFlow'])->name('finance.getCashFlow');
         Route::post('/add-cash-flow', [FinanceController::class, 'addCashFlow'])->name('finance.addCashFlow');
         Route::post('/update-cash-flow', [FinanceController::class, 'updateCashFlow'])->name('finance.updateCashFlow');
         Route::post('/report', [FinanceController::class, 'cashFlowReport'])->name('finance.cashFlowReport');
