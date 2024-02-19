@@ -7,10 +7,14 @@ use App\Models\NonCurrentAsset;
 use DateTime;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class exportBalanceSheetReport implements FromView
+class exportBalanceSheetReport implements FromView, ShouldAutoSize, WithStyles
 {
     private $dateStart, $dateEnd, $cashCA, $accountsReceivableCA, $suppliesCA, $otherCA, $totalCA, $fixedAssetsNCA, $depreciationNCA, $totalNCA, $totalAsset;
 
@@ -74,6 +78,68 @@ class exportBalanceSheetReport implements FromView
         $this->fixedAssetsNCA = $fixedAssetsNCA;
         $this->depreciationNCA = $depreciationNCA;
         $this->totalNCA = $totalNCA;
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            'A4:C14' => [
+                'borders' => [
+                    'outline' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => [
+                            'argb' => '000000'
+                        ],
+                    ],
+                    'inside' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => [
+                            'argb' => '000000'
+                        ],
+                    ],
+                ],
+            ],
+            'A4' => [
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'argb' => 'a3b6ee',
+                    ],
+                ],
+            ],
+            'A10' => [
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'argb' => 'a3b6ee',
+                    ],
+                ],
+            ],
+            'A9:C9' => [
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'argb' => 'fceec9',
+                    ],
+                ],
+            ],
+            'A13:C13' => [
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'argb' => 'fceec9',
+                    ],
+                ],
+            ],
+            'A14:C14' => [
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'argb' => 'c7ebf1',
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function view(): View

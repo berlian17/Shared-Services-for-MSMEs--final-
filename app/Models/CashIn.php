@@ -12,6 +12,6 @@ class CashIn extends Model
     protected $table = 'cash_ins';
 
     protected $fillable = [
-        'user_id', 'month', 'cash',
+        'user_id', 'year', 'cash',
     ];
 }
