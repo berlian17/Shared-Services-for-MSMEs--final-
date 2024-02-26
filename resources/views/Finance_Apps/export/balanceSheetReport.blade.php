@@ -15,26 +15,26 @@
         <tr>
             <td></td>
             <td>Kas dan setara kas</td>
-            <td>{{ $cashCA }}</td>
+            <td>Rp{{ number_format($cashCA, 2, ',', '.') }}</td>
         </tr>
         <tr>
             <td></td>
             <td>Piutang usaha</td>
-            <td>{{ $accountsReceivableCA }}</td>
+            <td>Rp{{ number_format($accountsReceivableCA, 2, ',', '.') }}</td>
         </tr>
         <tr>
             <td></td>
             <td>Persediaan</td>
-            <td>{{ $suppliesCA }}</td>
+            <td>Rp{{ number_format($suppliesCA, 2, ',', '.') }}</td>
         </tr>
         <tr>
             <td></td>
             <td>Aset lancar lainnya</td>
-            <td>{{ $otherCA }}</td>
+            <td>Rp{{ number_format($otherCA, 2, ',', '.') }}</td>
         </tr>
         <tr>
             <td colspan="2"><b>Jumlah aset lancar</b></td>
-            <td><b>{{ $totalCA }}</b></td>
+            <td><b>Rp{{ number_format($totalCA, 2, ',', '.') }}</b></td>
         </tr>
         <tr>
             <td colspan="3"><b>Aset Tidak Lancar</b></td>
@@ -42,20 +42,20 @@
         <tr>
             <td></td>
             <td>Aset tetap</td>
-            <td>{{ $fixedAssetsNCA }}</td>
+            <td>Rp{{ number_format($fixedAssetsNCA, 2, ',', '.') }}</td>
         </tr>
         <tr>
             <td></td>
             <td>Akumulasi penyusutan</td>
-            <td>{{ $depreciationNCA }}</td>
+            <td>-Rp{{ number_format($depreciationNCA, 2, ',', '.') }}</td>
         </tr>
         <tr>
             <td colspan="2"><b>Jumlah aset tidak lancar</b></td>
-            <td><b>{{ $totalNCA }}</b></td>
+            <td><b>Rp{{ number_format($totalNCA, 2, ',', '.') }}</b></td>
         </tr>
         <tr>
             <td colspan="2"><b>Jumlah aset</b></td>
-            <td><b>{{ $totalAsset }}</b></td>
+            <td><b>Rp{{ number_format($totalAsset, 2, ',', '.') }}</b></td>
         </tr>
     </tbody>
 </table>

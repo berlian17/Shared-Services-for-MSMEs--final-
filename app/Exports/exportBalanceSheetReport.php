@@ -62,7 +62,7 @@ class exportBalanceSheetReport implements FromView, ShouldAutoSize, WithStyles
         }
 
         $totalCA = $cashCA + $accountsReceivableCA + $suppliesCA + $otherCA;
-        $totalNCA = $fixedAssetsNCA + $depreciationNCA;
+        $totalNCA = $fixedAssetsNCA - $depreciationNCA;
         $totalAsset = $totalCA + $totalNCA;
 
         $this->dateStart = $dateStartInput;
