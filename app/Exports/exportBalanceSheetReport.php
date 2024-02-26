@@ -38,12 +38,8 @@ class exportBalanceSheetReport implements FromView, ShouldAutoSize, WithStyles
         $totalNCA = 0;
 
         foreach ($months as $month) {
+            // ca
             $ca = CurrentAsset::where('user_id', Auth::user()->id)
-                ->where('month', $month)
-                ->whereYear('created_at', '=', $year)
-                ->first();
-
-            $nca = NonCurrentAsset::where('user_id', Auth::user()->id)
                 ->where('month', $month)
                 ->whereYear('created_at', '=', $year)
                 ->first();
@@ -54,6 +50,12 @@ class exportBalanceSheetReport implements FromView, ShouldAutoSize, WithStyles
                 $suppliesCA += $ca->supplies;
                 $otherCA += $ca->other_current_assets;
             }
+
+            // nca
+            $nca = NonCurrentAsset::where('user_id', Auth::user()->id)
+                ->where('month', $month)
+                ->whereYear('created_at', '=', $year)
+                ->first();
 
             if ($nca) {
                 $fixedAssetsNCA += $nca->fixed_assets;
@@ -69,12 +71,14 @@ class exportBalanceSheetReport implements FromView, ShouldAutoSize, WithStyles
         $this->dateEnd = $dateEndInput;
         $this->totalAsset = $totalAsset;
 
+        // ca
         $this->cashCA = $cashCA;
         $this->accountsReceivableCA = $accountsReceivableCA;
         $this->suppliesCA = $suppliesCA;
         $this->otherCA = $otherCA;
         $this->totalCA = $totalCA;
 
+        // nca
         $this->fixedAssetsNCA = $fixedAssetsNCA;
         $this->depreciationNCA = $depreciationNCA;
         $this->totalNCA = $totalNCA;

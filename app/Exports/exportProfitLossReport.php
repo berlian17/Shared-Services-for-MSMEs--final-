@@ -20,10 +20,10 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
 {
     private $year;
     private $salesMonth1, $salesMonth2, $salesMonth3, $salesMonth4, $salesMonth5, $salesMonth6, $salesMonth7, $salesMonth8, $salesMonth9, $salesMonth10, $salesMonth11, $salesMonth12;
+    private $cogsArray1, $cogsArray2, $cogsArray3, $cogsArray4, $cogsArray5, $cogsArray6, $cogsArray7, $cogsArray8, $cogsArray9, $cogsArray10, $cogsArray11, $cogsArray12;
 
     public function __construct($year)
     {
-        // Get data
         $sales = OrderDetail::select('order_details.*', 'orders.order_date')
             ->join('orders', 'orders.id', '=', 'order_details.order_id')
             ->whereYear('orders.order_date', '=', $year)
@@ -67,8 +67,8 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
             }
 
             if (!$found) {
-                $cogsArray[] = 0;
-                $totalHPP[] = 0;
+                $cogsArray[] = null;
+                $totalHPP[] = null;
             }
         }
 
@@ -114,7 +114,7 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
             }
         }
 
-        // sales
+        // cogs
         $salesMonth1 = $salesMonth["01"];
         $salesMonth2 = $salesMonth["02"];
         $salesMonth3 = $salesMonth["03"];
@@ -127,6 +127,20 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
         $salesMonth10 = $salesMonth["10"];
         $salesMonth11 = $salesMonth["11"];
         $salesMonth12 = $salesMonth["12"];
+
+        // raw_material
+        $cogsArray1 = $cogsArray[0];
+        $cogsArray2 = $cogsArray[1];
+        $cogsArray3 = $cogsArray[2];
+        $cogsArray4 = $cogsArray[3];
+        $cogsArray5 = $cogsArray[4];
+        $cogsArray6 = $cogsArray[5];
+        $cogsArray7 = $cogsArray[6];
+        $cogsArray8 = $cogsArray[7];
+        $cogsArray9 = $cogsArray[8];
+        $cogsArray10 = $cogsArray[9];
+        $cogsArray11 = $cogsArray[10];
+        $cogsArray12 = $cogsArray[11];
 
         // net
         $net1 = ($salesMonth["01"] - $totalHPP[0] - $totalSSE[0] - $totalGAC[0]);
@@ -172,6 +186,7 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
 
         $this->year = $year;
 
+        // sales
         $this->salesMonth1 = $salesMonth1;
         $this->salesMonth2 = $salesMonth2;
         $this->salesMonth3 = $salesMonth3;
@@ -184,6 +199,20 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
         $this->salesMonth10 = $salesMonth10;
         $this->salesMonth11 = $salesMonth11;
         $this->salesMonth12 = $salesMonth12;
+
+        // cogs
+        $this->cogsArray1 = $cogsArray1;
+        $this->cogsArray2 = $cogsArray2;
+        $this->cogsArray3 = $cogsArray3;
+        $this->cogsArray4 = $cogsArray4;
+        $this->cogsArray5 = $cogsArray5;
+        $this->cogsArray6 = $cogsArray6;
+        $this->cogsArray7 = $cogsArray7;
+        $this->cogsArray8 = $cogsArray8;
+        $this->cogsArray9 = $cogsArray9;
+        $this->cogsArray10 = $cogsArray10;
+        $this->cogsArray11 = $cogsArray11;
+        $this->cogsArray12 = $cogsArray12;
     }
 
     public function styles(Worksheet $sheet)
@@ -213,7 +242,7 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
                     ],
                 ],
             ],
-            'A5:M5' => [
+            'A5' => [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => [
@@ -229,7 +258,7 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
                     ],
                 ],
             ],
-            'A8:M8' => [
+            'A8' => [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => [
@@ -256,6 +285,18 @@ class exportProfitLossReport implements FromView, ShouldAutoSize, WithStyles
             'salesMonth10'  => $this->salesMonth10,
             'salesMonth11'  => $this->salesMonth11,
             'salesMonth12'  => $this->salesMonth12,
+            'cogsArray1'    => $this->cogsArray1,
+            'cogsArray2'    => $this->cogsArray2,
+            'cogsArray3'    => $this->cogsArray3,
+            'cogsArray4'    => $this->cogsArray4,
+            'cogsArray5'    => $this->cogsArray5,
+            'cogsArray6'    => $this->cogsArray6,
+            'cogsArray7'    => $this->cogsArray7,
+            'cogsArray8'    => $this->cogsArray8,
+            'cogsArray9'    => $this->cogsArray9,
+            'cogsArray10'   => $this->cogsArray10,
+            'cogsArray11'   => $this->cogsArray11,
+            'cogsArray12'   => $this->cogsArray12,
         ]);
     }
 }
