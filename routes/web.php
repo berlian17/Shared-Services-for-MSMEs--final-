@@ -227,7 +227,7 @@ Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
 
     Route::prefix('/export')->group(function () {
         Route::get('/balance-sheet', [ReportController::class, 'exportBalanceSheet'])->name('report.exportBalanceSheet');
-        Route::get('/cash-flow', [ReportController::class, 'exportCashFlow'])->name('report.exportCashFlow');
         Route::get('/profit-loss', [ReportController::class, 'exportProfitLoss'])->name('report.exportProfitLoss');
+        Route::get('/cash-flow', [ReportController::class, 'exportCashFlow'])->name('report.exportCashFlow');
     });
 });

@@ -96,7 +96,7 @@
             });
 
             return formatter.format(angka);
-        }
+        } 
 
         $(document).ready(function() {
             var ci = $('#inputCashCI').val();
