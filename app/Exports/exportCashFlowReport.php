@@ -129,6 +129,7 @@ class exportCashFlowReport implements FromView, ShouldAutoSize, WithStyles
         $this->year = $year;
         $this->ci = $ci->cash;
 
+        // total
         $this->total1 = $total1;
         $this->total2 = $total2;
         $this->total3 = $total3;
@@ -142,6 +143,7 @@ class exportCashFlowReport implements FromView, ShouldAutoSize, WithStyles
         $this->total11 = $total11;
         $this->total12 = $total12;
 
+        // sales
         $this->salesMonth1 = $salesMonth["01"];
         $this->salesMonth2 = $salesMonth["02"];
         $this->salesMonth3 = $salesMonth["03"];
@@ -155,6 +157,7 @@ class exportCashFlowReport implements FromView, ShouldAutoSize, WithStyles
         $this->salesMonth11 = $salesMonth["11"];
         $this->salesMonth12 = $salesMonth["12"];
 
+        // cogs
         $this->cogsArray1 = $cogsArray[0];
         $this->cogsArray2 = $cogsArray[1];
         $this->cogsArray3 = $cogsArray[2];
@@ -168,6 +171,7 @@ class exportCashFlowReport implements FromView, ShouldAutoSize, WithStyles
         $this->cogsArray11 = $cogsArray[10];
         $this->cogsArray12 = $cogsArray[11];
 
+        // sse
         $this->sseArray1 = $sseArray[0];
         $this->sseArray2 = $sseArray[1];
         $this->sseArray3 = $sseArray[2];
@@ -181,6 +185,7 @@ class exportCashFlowReport implements FromView, ShouldAutoSize, WithStyles
         $this->sseArray11 = $sseArray[10];
         $this->sseArray12 = $sseArray[11];
 
+        // gac
         $this->gacArray1 = $gacArray[0];
         $this->gacArray2 = $gacArray[1];
         $this->gacArray3 = $gacArray[2];

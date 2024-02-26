@@ -60,5 +60,20 @@
         <tr>
             <td colspan="13"><b>HPP</b></td>
         </tr>
+        <tr>
+            <td>BI. Bahan baku</td>
+            <td>Rp{{ isset($cogsArray1) ? number_format($cogsArray1->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray2) ? number_format($cogsArray2->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray3) ? number_format($cogsArray3->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray4) ? number_format($cogsArray4->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray5) ? number_format($cogsArray5->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray6) ? number_format($cogsArray6->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray7) ? number_format($cogsArray7->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray8) ? number_format($cogsArray8->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray9) ? number_format($cogsArray9->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray10) ? number_format($cogsArray10->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray11) ? number_format($cogsArray11->raw_material, 0, ',', '.') : 0 }}</td>
+            <td>Rp{{ isset($cogsArray12) ? number_format($cogsArray12->raw_material, 0, ',', '.') : 0 }}</td>
+        </tr>
     </tbody>
 </table>
