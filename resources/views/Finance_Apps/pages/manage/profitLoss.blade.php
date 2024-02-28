@@ -346,7 +346,7 @@
                                         <td id="marketing_operationsSSE">Rp 0</td>
                                     </tr>
                                     <tr>
-                                        <td style="text-indent: 40px">BI. Lain marketing</td>
+                                        <td style="text-indent: 40px">BI. Lain-lain marketing</td>
                                         <td id="otherCostsSSE">Rp 0</td>
                                     </tr>
                                     <tr>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\exportBalanceSheetReport;
 use App\Http\Controllers\Controller;
 use App\Models\CashIn;
 use App\Models\CostOfGoodsSold;
@@ -11,11 +10,9 @@ use App\Models\GeneralAdminCost;
 use App\Models\NonCurrentAsset;
 use App\Models\OrderDetail;
 use App\Models\SellingServiceExpenses;
-use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceController extends Controller
 {
@@ -657,18 +654,18 @@ class FinanceController extends Controller
         $gross12 = $salesMonth["12"] ? $net11 + ($salesMonth["12"] - $totalHPP[11]) : 0;
 
         // operating
-        $operatingIncome1 = ($salesMonth["01"] - $totalHPP[0] - $totalSSE[0]);
-        $operatingIncome2 = $net1 + ($salesMonth["02"] - $totalHPP[1] - $totalSSE[1]);
-        $operatingIncome3 = $net2 + ($salesMonth["03"] - $totalHPP[2] - $totalSSE[2]);
-        $operatingIncome4 = $net3 + ($salesMonth["04"] - $totalHPP[3] - $totalSSE[3]);
-        $operatingIncome5 = $net4 + ($salesMonth["05"] - $totalHPP[4] - $totalSSE[4]);
-        $operatingIncome6 = $net5 + ($salesMonth["06"] - $totalHPP[5] - $totalSSE[5]);
-        $operatingIncome7 = $net6 + ($salesMonth["07"] - $totalHPP[6] - $totalSSE[6]);
-        $operatingIncome8 = $net7 + ($salesMonth["08"] - $totalHPP[7] - $totalSSE[7]);
-        $operatingIncome9 = $net8 + ($salesMonth["09"] - $totalHPP[8] - $totalSSE[8]);
-        $operatingIncome10 = $net9 + ($salesMonth["10"] - $totalHPP[9] - $totalSSE[9]);
-        $operatingIncome11 = $net10 + ($salesMonth["11"] - $totalHPP[10] - $totalSSE[10]);
-        $operatingIncome12 = $net11 + ($salesMonth["12"] - $totalHPP[11] - $totalSSE[11]);
+        $operatingIncome1 = $totalSSE[0] ? ($salesMonth["01"] - $totalHPP[0] - $totalSSE[0]) : 0;
+        $operatingIncome2 = $totalSSE[1] ? $net1 + ($salesMonth["02"] - $totalHPP[1] - $totalSSE[1]) : 0;
+        $operatingIncome3 = $totalSSE[2] ? $net2 + ($salesMonth["03"] - $totalHPP[2] - $totalSSE[2]) : 0;
+        $operatingIncome4 = $totalSSE[3] ? $net3 + ($salesMonth["04"] - $totalHPP[3] - $totalSSE[3]) : 0;
+        $operatingIncome5 = $totalSSE[4] ? $net4 + ($salesMonth["05"] - $totalHPP[4] - $totalSSE[4]) : 0;
+        $operatingIncome6 = $totalSSE[5] ? $net5 + ($salesMonth["06"] - $totalHPP[5] - $totalSSE[5]) : 0;
+        $operatingIncome7 = $totalSSE[6] ? $net6 + ($salesMonth["07"] - $totalHPP[6] - $totalSSE[6]) : 0;
+        $operatingIncome8 = $totalSSE[7] ? $net7 + ($salesMonth["08"] - $totalHPP[7] - $totalSSE[7]) : 0;
+        $operatingIncome9 = $totalSSE[8] ? $net8 + ($salesMonth["09"] - $totalHPP[8] - $totalSSE[8]) : 0;
+        $operatingIncome10 = $totalSSE[9] ? $net9 + ($salesMonth["10"] - $totalHPP[9] - $totalSSE[9]) : 0;
+        $operatingIncome11 = $totalSSE[10] ? $net10 + ($salesMonth["11"] - $totalHPP[10] - $totalSSE[10]) : 0;
+        $operatingIncome12 = $totalSSE[11] ? $net11 + ($salesMonth["12"] - $totalHPP[11] - $totalSSE[11]) : 0;
 
         $html .= '
             <h6 class="mb-3 text-gray-800 text-center"><b>PROFIT & LOSS</b></h6>
@@ -852,7 +849,7 @@ class FinanceController extends Controller
                             <td>Rp ' . (isset($sseArray[11]) ? number_format($sseArray[11]->marketing_operations, 0, ',', '.') : "0") . '</td>
                         </tr>
                         <tr>
-                            <td style="text-indent: 40px;">BI. Lain marketing</td>
+                            <td style="text-indent: 40px;">BI. Lain-lain marketing</td>
                             <td>Rp ' . (isset($sseArray[0]) ? number_format($sseArray[0]->other_cost, 0, ',', '.') : "0") . '</td>
                             <td>Rp ' . (isset($sseArray[1]) ? number_format($sseArray[1]->other_cost, 0, ',', '.') : "0") . '</td>
                             <td>Rp ' . (isset($sseArray[2]) ? number_format($sseArray[2]->other_cost, 0, ',', '.') : "0") . '</td>
