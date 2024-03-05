@@ -11,10 +11,11 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('admin/dashboardAdmin') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('dashboardAdmin') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+            <span>Dashboard</span>
+        </a>
     </li>
 
     <!-- Divider -->
@@ -28,7 +29,7 @@
     </div>
 
     <!-- Nav Item - HR Apps Menu -->
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('admin/daftar-perusahaan') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('hr.companyList') }}">
             <i class="fas fa-fw fa-id-badge"></i>
             <span>Daftar Perusahaan</span>
@@ -36,7 +37,7 @@
     </li>
 
     <!-- Nav Item - Absensi Menu -->
-    <li class="nav-item {{ Request::is('hr/absensi') ? 'active' : '' }}">
+    <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#example"
         aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-id-badge"></i>
@@ -44,14 +45,14 @@
         </a>
         <div id="example" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('absensi.index') }}">Absensi</a>
-                <a class="collapse-item" href="{{ route('absensi.cetak') }}">Cetak Absensi</a>
+                <a class="collapse-item {{ Request::is('hr/absensi') ? 'active' : '' }}" href="{{ route('absensi.index') }}">Absensi</a>
+                <a class="collapse-item {{ Request::is('hr/cetak-form-pegawai') ? 'active' : '' }}" href="{{ route('absensi.cetak') }}">Cetak Absensi</a>
             </div>
         </div>
     </li>
 
     <!-- Nav Item - Divisi Menu -->
-    <li class="nav-item {{ Request::is('hr/division') ? 'active' : '' }}">
+    <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
             aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-server"></i>
@@ -59,8 +60,8 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('division.index') }}">Semua Divisi</a>
-                <a class="collapse-item" href="{{ route('division.create') }}">Tambah Divisi</a>
+                <a class="collapse-item {{ Request::is('hr/division') ? 'active' : '' }}" href="{{ route('division.index') }}">Semua Divisi</a>
+                <a class="collapse-item {{ Request::is('hr/division/create') ? 'active' : '' }}" href="{{ route('division.create') }}">Tambah Divisi</a>
             </div>
         </div>
     </li>
@@ -101,7 +102,7 @@
     </div>
 
     <!-- Nav Item - Good Menu -->
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('supplier/good') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('good.index') }}">
             <i class="fas fa-fw fa-id-badge"></i>
             <span>Goods</span>
@@ -127,10 +128,11 @@
     </li>
 
     <!-- Nav Item - Report Menu -->
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('supplier/orderReport') ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('supplier/orderReport') }}">
             <i class="fas fa-fw fa-envelope"></i>
-            <span>Order Report</span></a>
+            <span>Order Report</span>
+        </a>
     </li>
 
     <!-- Divider -->
@@ -153,14 +155,14 @@
         <div id="collapseOrder" class="collapse" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('order.index') }}">Daftar Pesanan</a>
-                <a class="collapse-item" href="{{ route('report.index') }}">Laporan Pesanan</a>
+                <a class="collapse-item {{ Request::is('sales/order') ? 'active' : '' }}" href="{{ route('order.index') }}">Daftar Pesanan</a>
+                <a class="collapse-item {{ Request::is('sales/report') ? 'active' : '' }}" href="{{ route('report.index') }}">Laporan Pesanan</a>
             </div>
         </div>
     </li>
 
     <!-- Nav Item - Customer Menu -->
-    <li class="nav-item">
+    <li class="nav-item {{ Request::is('sales/customer') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('customer.index') }}">
             <i class="fas fa-fw fa-user"></i>
             <span>Pelanggan</span>
@@ -172,14 +174,29 @@
 
     {{-- ====================================================================================================================================================================  --}}
     {{-- ====================================================================================================================================================================  --}}
-    <!-- Heading Sales -->
+    <!-- Heading Finance -->
     <div class="sidebar-heading">
         Manajemen Keuangan
     </div>
 
-    <!-- Nav Item - Order Menu -->
-    <li class="nav-item">
-        
+    <!-- Nav Item - Finance Menu -->
+    <li class="nav-item {{ Request::is('finance/balance-sheet') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('finance.balanceSheet') }}">
+            <i class="fas fa-receipt"></i>
+            <span>Balance Sheet</span>
+        </a>
+    </li>
+    <li class="nav-item {{ Request::is('finance/profit-loss') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('finance.profitLoss') }}">
+            <i class="fas fa-receipt"></i>
+            <span>Profit & Loss</span>
+        </a>
+    </li>
+    <li class="nav-item {{ Request::is('finance/cash-flow') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('finance.cashFlow') }}">
+            <i class="fas fa-receipt"></i>
+            <span>Cash Flow</span>
+        </a>
     </li>
 
     <!-- Divider -->
@@ -189,5 +206,4 @@
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
-
 </ul>
