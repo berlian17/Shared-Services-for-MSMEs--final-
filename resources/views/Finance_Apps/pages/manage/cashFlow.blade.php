@@ -19,7 +19,7 @@
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-8 col-12">
-                                    <label for="inputCashCI">Cash In Bulan Januari Tahun {{ $year }}</label>
+                                    <label for="inputCashCI">Cash In Tahun {{ $year }}</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">Rp</div>
