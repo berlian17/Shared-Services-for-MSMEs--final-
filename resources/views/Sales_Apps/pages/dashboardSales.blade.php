@@ -100,21 +100,6 @@
                 </div>
             </div>
         </div>
-  
-        <!-- Card -->
-        {{-- <div class="card shadow mb-4">
-            <div class="card-body">
-                <h5 class="mb-3 text-gray-800"><b>Laporan Pemesanan</b></h5>
-                <div class="row">
-                    @foreach ($orderReport as $item)
-                        <a href="{{ route('report.download', $item->id) }}" class="col-md-2 report">
-                            <img src="{{ asset('img/excel_logo.png') }}" alt="img-report">
-                            <p>{{ $item->report }}</p>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </div> --}}
     </div>
 @endsection
 
