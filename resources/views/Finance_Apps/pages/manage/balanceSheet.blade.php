@@ -6,6 +6,18 @@
 
 @section('content-finance')
     <div class="container-fluid">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Balance Sheet</h1>
@@ -19,9 +31,8 @@
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="inputMonth">Bulan</label>
                                     <select class="form-control" id="inputMonth" name="month" required>
-                                        <option value="0">Pilih Bulan</option>
+                                        <option value="">Pilih Bulan</option>
                                         <option value="1">Januari</option>
                                         <option value="2">Februari</option>
                                         <option value="3">Maret</option>
@@ -111,26 +122,36 @@
             <div class="col-md-6 col-12">
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <div class="form-row">
-                            <div class="form-group col-12">
-                                <label for="previewMonth">Bulan</label>
-                                <select class="form-control" id="previewMonth">
-                                    <option value="0">Pilih Bulan</option>
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
-                                </select>
+                        <form method="POST" action="{{ route('finance.deleteBalanceSheet') }}">
+                            @csrf
+                            @method('DELETE')
+                            <div class="form-row">
+                                <div class="form-group col-9">
+                                    <select class="form-control" id="previewMonth" name="month" required>
+                                        <option value="">Pilih Bulan</option>
+                                        <option value="1">Januari</option>
+                                        <option value="2">Februari</option>
+                                        <option value="3">Maret</option>
+                                        <option value="4">April</option>
+                                        <option value="5">Mei</option>
+                                        <option value="6">Juni</option>
+                                        <option value="7">Juli</option>
+                                        <option value="8">Agustus</option>
+                                        <option value="9">September</option>
+                                        <option value="10">Oktober</option>
+                                        <option value="11">November</option>
+                                        <option value="12">Desember</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" id="caID" name="caID" value="">
+                                <input type="hidden" id="ncaID" name="ncaID" value="">
+                                <div class="form-group col-3">
+                                    <button type="submit" class="btn btn-danger btn-block mb-2">
+                                        Hapus
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                         
                         <h6 class="mb-3 text-gray-800"><b>Aset Bulan <span class="prevMonth"></span> <span id="year"></span></b></h6>
                         <div class="table-responsive mt-4">
@@ -238,6 +259,10 @@
             var date = new Date();
             var year = date.getFullYear();
 
+            setTimeout(function(){
+                $('.alert-success, .alert-danger').fadeOut('slow');
+            }, 3000);
+
             // Left card
             $('#inputMonth').on('change', (event) => {
                 // Get data preview
@@ -257,13 +282,8 @@
                             $('#inputDepreciationNCA').val(res.data.nca.depreciation);
                         } else if (!res.status || (res.data.ca === null && res.data.nca === null)) {
                             $('#financeForm').attr('action', "{{ route('finance.addBalanceSheet') }}");
-                            
-                            $('#inputCashCA').val('');
-                            $('#inputAccountsReceivableCA').val('');
-                            $('#inputSuppliesCA').val('');
-                            $('#inputOtherCA').val('');
-                            $('#inputFixedAssetsNCA').val('');
-                            $('#inputDepreciationNCA').val('');
+                        
+                            $('#inputCashCA, #inputAccountsReceivableCA, #inputSuppliesCA, #inputOtherCA, #inputFixedAssetsNCA, #inputDepreciationNCA').val('');
                         }
                     }
                 });
@@ -297,8 +317,8 @@
                 } else if (event.target.value == 12) {
                     $('.prevMonth').text('Desember');
                 } else {
-                    $('.prevMonth').text('');
-                    $('#year').text('');
+                    $('.prevMonth, #year').text('');
+                    $('#caID, #ncaID').val('');
                 }
 
                 // Get data preview
@@ -307,9 +327,11 @@
                     url: "/finance/balance-sheet/get-balance-sheet/" + event.target.value,
                     success: function(res) {
                         if (res.status && (res.data.ca && res.data.nca)) {
-                            var action = "{{ route('finance.updateBalanceSheet') }}?caID=" + res.data.ca.id + "&ncaID=" + res.data.nca.id;
+                            var action = "{{ route('finance.updateBalanceSheet') }}?caID=" + res.data.ca.id + "&ncaID=" + res.data.nca.id;                            
                             $('#financeForm').attr('action', action);
 
+                            $('#caID').val(res.data.ca.id);
+                            $('#ncaID').val(res.data.nca.id);
                             $('#cashCA').html(formatRupiah(res.data.ca.cash));
                             $('#accountsReceivableCA').html(formatRupiah(res.data.ca.accounts_receivable));
                             $('#suppliesCA').html(formatRupiah(res.data.ca.supplies));
@@ -318,13 +340,9 @@
                             $('#depreciationNCA').html(formatRupiah(res.data.nca.depreciation));
                         } else if (!res.status || (res.data.ca === null && res.data.nca === null)) {
                             $('#financeForm').attr('action', "{{ route('finance.addBalanceSheet') }}");
-                            
-                            $('#cashCA').html("Rp 0");
-                            $('#accountsReceivableCA').html("Rp 0");
-                            $('#suppliesCA').html("Rp 0");
-                            $('#otherCA').html("Rp 0");
-                            $('#fixedAssetsNCA').html("Rp 0");
-                            $('#depreciationNCA').html("Rp 0");
+
+                            $('#caID, #ncaID').val('');
+                            $('#cashCA, #accountsReceivableCA, #suppliesCA, #otherCA, #fixedAssetsNCA, #depreciationNCA').html("Rp 0");
                         }
                     }
                 });

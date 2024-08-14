@@ -199,6 +199,7 @@ Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
         Route::get('/get-balance-sheet/{month}', [FinanceController::class, 'getBalanceSheet'])->name('finance.getBalanceSheet');
         Route::post('/add-balance-sheet', [FinanceController::class, 'addBalanceSheet'])->name('finance.addBalanceSheet');
         Route::post('/update-balance-sheet', [FinanceController::class, 'updateBalanceSheet'])->name('finance.updateBalanceSheet');
+        Route::delete('/delete-balance-sheet', [FinanceController::class, 'deleteBalanceSheet'])->name('finance.deleteBalanceSheet');
         Route::post('/report', [FinanceController::class, 'balanceSheetReport'])->name('finance.balanceSheetReport');
     });
 
@@ -214,6 +215,7 @@ Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
         Route::get('/get-profit-loss-ga/{month}', [FinanceController::class, 'getProfitLossGA'])->name('finance.getProfitLossGA');
         Route::post('/add-profit-loss-ga', [FinanceController::class, 'addProfitLossGA'])->name('finance.addProfitLossGA');
         Route::post('/update-profit-loss-ga', [FinanceController::class, 'updateProfitLossGA'])->name('finance.updateProfitLossGA');
+        Route::delete('/delete-profit-loss', [FinanceController::class, 'deleteProfitLoss'])->name('finance.deleteProfitLoss');
         Route::post('/report', [FinanceController::class, 'profitLossReport'])->name('finance.profitLossReport');
     });
 
@@ -222,6 +224,7 @@ Route::prefix('finance')->middleware(['finance', 'auth'])->group(function () {
         Route::get('/get-cash-flow/{year}', [FinanceController::class, 'getCashFlow'])->name('finance.getCashFlow');
         Route::post('/add-cash-flow', [FinanceController::class, 'addCashFlow'])->name('finance.addCashFlow');
         Route::post('/update-cash-flow', [FinanceController::class, 'updateCashFlow'])->name('finance.updateCashFlow');
+        Route::get('/delete-cash-flow', [FinanceController::class, 'deleteCashFlow'])->name('finance.deleteCashFlow');
         Route::post('/report', [FinanceController::class, 'cashFlowReport'])->name('finance.cashFlowReport');
     });
 

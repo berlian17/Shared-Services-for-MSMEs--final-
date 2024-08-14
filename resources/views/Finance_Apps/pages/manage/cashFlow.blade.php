@@ -6,6 +6,18 @@
 
 @section('content-finance')
     <div class="container-fluid">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Cash Flow</h1>
@@ -18,7 +30,7 @@
                         <form method="POST" id="financeForm" action="{{ route('finance.addCashFlow') }}">
                             @csrf
                             <div class="form-row">
-                                <div class="form-group col-md-8 col-12">
+                                <div class="form-group col-md-6 col-12">
                                     <label for="inputCashCI">Cash In Tahun {{ $year }}</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -27,11 +39,18 @@
                                         <input type="text" class="form-control rupiah" name="cashCI" id="inputCashCI" value="{{ $ci ? $ci->cash : old('cashCI') }}" min="0" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-12 mt-3">
+                                <div class="col-md-3 col-12 mt-3">
                                     <button type="submit" class="btn btn-primary btn-user btn-block mt-3">
                                         Submit
                                     </button>
                                 </div>
+                                @if ($ci)
+                                    <div class="col-md-3 col-12 mt-3">
+                                        <a href="" class="btn btn-danger btn-block mt-3" id="btn-delete">
+                                            Hapus
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
                         </form>
                     </div>
@@ -101,6 +120,10 @@
         $(document).ready(function() {
             var ci = $('#inputCashCI').val();
 
+            setTimeout(function(){
+                $('.alert-success, .alert-danger').fadeOut('slow');
+            }, 3000);
+            
             if (ci) {
                 // Get data
                 $.ajax({
@@ -109,9 +132,13 @@
                     success: function(res) {
                         if (res.status && res.data.ci) {
                             var action = "{{ route('finance.updateCashFlow') }}?ciID=" + res.data.ci.id;
+                            var actionDelete = "{{ route('finance.deleteCashFlow') }}?ciID=" + res.data.ci.id;
+
                             $('#financeForm').attr('action', action);
+                            $('#btn-delete').attr('href', actionDelete);
                         } else if (!res.status || res.data.ci === null) {
                             $('#financeForm').attr('action', "{{ route('finance.addCashFlow') }}");
+                            $('#btn-delete').attr('href', "");
                         }
                     }
                 });

@@ -6,6 +6,18 @@
 
 @section('content-finance')
     <div class="container-fluid">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Profit & Loss</h1>
@@ -20,7 +32,6 @@
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="inputMonthCOGS">Bulan</label>
                                     <select class="form-control" id="inputMonthCOGS" name="month" required>
                                         <option value="">Pilih Bulan</option>
                                         <option value="1">Januari</option>
@@ -83,7 +94,6 @@
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="inputMonthSSE">Bulan</label>
                                     <select class="form-control" id="inputMonthSSE" name="month" required>
                                         <option value="">Pilih Bulan</option>
                                         <option value="1">Januari</option>
@@ -155,7 +165,6 @@
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="inputMonthGA">Bulan</label>
                                     <select class="form-control" id="inputMonthGA" name="month" required>
                                         <option value="">Pilih Bulan</option>
                                         <option value="1">Januari</option>
@@ -286,26 +295,37 @@
             <div class="col-md-6 col-12">
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <div class="form-row">
-                            <div class="form-group col-12">
-                                <label for="previewMonth">Bulan</label>
-                                <select class="form-control" id="previewMonth">
-                                    <option value="0">Pilih Bulan</option>
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
-                                </select>
+                        <form method="POST" action="{{ route('finance.deleteProfitLoss') }}">
+                            @csrf
+                            @method('DELETE')
+                            <div class="form-row">
+                                <div class="form-group col-9">
+                                    <select class="form-control" id="previewMonth" name="month" required>
+                                        <option value="">Pilih Bulan</option>
+                                        <option value="1">Januari</option>
+                                        <option value="2">Februari</option>
+                                        <option value="3">Maret</option>
+                                        <option value="4">April</option>
+                                        <option value="5">Mei</option>
+                                        <option value="6">Juni</option>
+                                        <option value="7">Juli</option>
+                                        <option value="8">Agustus</option>
+                                        <option value="9">September</option>
+                                        <option value="10">Oktober</option>
+                                        <option value="11">November</option>
+                                        <option value="12">Desember</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" id="cogsID" name="cogsID" value="">
+                                <input type="hidden" id="sseID" name="sseID" value="">
+                                <input type="hidden" id="gacID" name="gacID" value="">
+                                <div class="form-group col-3">
+                                    <button type="submit" class="btn btn-danger btn-block mb-2">
+                                        Hapus
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
 
                         <h6 class="mb-3 text-gray-800"><b>Profit & Loss Bulan <span class="prevMonth"></span> <span id="year"></span></b></h6>
                         <div class="table-responsive mt-4">
@@ -467,6 +487,10 @@
             var date = new Date();
             var year = date.getFullYear();
 
+            setTimeout(function(){
+                $('.alert-success, .alert-danger').fadeOut('slow');
+            }, 3000);
+
             // Left card COGS
             $('#inputMonthCOGS').on('change', (event) => {
                 // Get data preview
@@ -484,9 +508,7 @@
                         } else if (!res.status || res.data.cogs === null) {
                             $('#financeFormCOGS').attr('action', "{{ route('finance.addProfitLossCOGS') }}");
                             
-                            $('#inputRawMaterialCOGS').val('');
-                            $('#inputManpowerCOGS').val('');
-                            $('#inputFactoryOverheadCOGS').val('');
+                            $('#inputRawMaterialCOGS, #inputManpowerCOGS, #inputFactoryOverheadCOGS').val('');
                         }
                     }
                 });
@@ -510,10 +532,7 @@
                         } else if (!res.status || res.data.sse === null) {
                             $('#financeFormSSE').attr('action', "{{ route('finance.addProfitLossSSE') }}");
                             
-                            $('#inputAdmEcommerceSSE').val('');
-                            $('#inputMarketingSalarySSE').val('');
-                            $('#inputMarketingOperationsSSE').val('');
-                            $('#inputOtherCostSSE').val('');
+                            $('#inputAdmEcommerceSSE, #inputMarketingSalarySSE, #inputMarketingOperationsSSE, #inputOtherCostSSE').val('');
                         }
                     }
                 });
@@ -544,17 +563,7 @@
                         } else if (!res.status || res.data.gac === null) {
                             $('#financeFormGA').attr('action', "{{ route('finance.addProfitLossGA') }}");
                             
-                            $('#inputSalariesAllowancesGA').val('');
-                            $('#inputElectricityWaterGA').val('');
-                            $('#inputTransportationGA').val('');
-                            $('#inputCommunicationGA').val('');
-                            $('#inputOfficeStationeryGA').val('');
-                            $('#inputConsultantGA').val('');
-                            $('#inputCleanlinessSecurityGA').val('');
-                            $('#inputMaintenanceRenovationGA').val('');
-                            $('#inputDepreciationGA').val('');
-                            $('#inputTaxGA').val('');
-                            $('#inputOtherCostGA').val('');
+                            $('#inputSalariesAllowancesGA, #inputElectricityWaterGA, #inputTransportationGA, #inputCommunicationGA, #inputOfficeStationeryGA, #inputConsultantGA, #inputCleanlinessSecurityGA, #inputMaintenanceRenovationGA, #inputDepreciationGA, #inputTaxGA, #inputOtherCostGA').val('');
                         }
                     }
                 });
@@ -588,8 +597,8 @@
                 } else if (event.target.value == 12) {
                     $('.prevMonth').text('Desember');
                 } else {
-                    $('.prevMonth').text('');
-                    $('#year').text('');
+                    $('.prevMonth, #year').text('');
+                    $('#cogsID, #sseID, #gacID').val('');
                 }
 
                 // Get data preview
@@ -598,6 +607,9 @@
                     url: "/finance/profit-loss/get-profit-loss/" + event.target.value,
                     success: function(res) {
                         if (res.status && (res.data.cogs && res.data.sse && res.data.gac)) {
+                            $('#cogsID').val(res.data.cogs.id);
+                            $('#sseID').val(res.data.sse.id);
+                            $('#gacID').val(res.data.gac.id);
                             $('#rawMaterialCOGS').html(formatRupiah(res.data.cogs.raw_material));
                             $('#manpowerCOGS').html(formatRupiah(res.data.cogs.manpower));
                             $('#factoryOverheadCOGS').html(formatRupiah(res.data.cogs.factory_overhead));
@@ -617,24 +629,8 @@
                             $('#taxGAC').html(formatRupiah(res.data.gac.tax));
                             $('#otherCostGAC').html(formatRupiah(res.data.gac.other_cost));
                         } else if (!res.status || (res.data.cogs === null && res.data.sse === null && res.data.gac === null)) {
-                            $('#rawMaterialCOGS').html("Rp 0");
-                            $('#manpowerCOGS').html("Rp 0");
-                            $('#factoryOverheadCOGS').html("Rp 0");
-                            $('#admEcommerceSSE').html("Rp 0");
-                            $('#marketingSalarySSE').html("Rp 0");
-                            $('#marketing_operationsSSE').html("Rp 0");
-                            $('#otherCostsSSE').html("Rp 0");
-                            $('#salariesAllowancesGAC').html("Rp 0");
-                            $('#electricityWaterGAC').html("Rp 0");
-                            $('#transportationGAC').html("Rp 0");
-                            $('#communicationGAC').html("Rp 0");
-                            $('#officeStationeryGAC').html("Rp 0");
-                            $('#consultantGAC').html("Rp 0");
-                            $('#cleanlinessSecurityGAC').html("Rp 0");
-                            $('#maintenanceRenovationGAC').html("Rp 0");
-                            $('#depreciationGAC').html("Rp 0");
-                            $('#taxGAC').html("Rp 0");
-                            $('#otherCostGAC').html("Rp 0");
+                            $('#cogsID, #sseID, #gacID').val('');
+                            $('#rawMaterialCOGS, #manpowerCOGS, #factoryOverheadCOGS, #admEcommerceSSE, #marketingSalarySSE, #marketing_operationsSSE, #otherCostsSSE, #salariesAllowancesGAC, #electricityWaterGAC, #transportationGAC, #communicationGAC, #officeStationeryGAC, #consultantGAC, #cleanlinessSecurityGAC, #maintenanceRenovationGAC, #depreciationGAC, #taxGAC, #otherCostGAC').html("Rp 0");
                         }
                     }
                 });

@@ -92,7 +92,7 @@ class FinanceController extends Controller
             'depreciation'  => $this->strToIntr($validation['depreciationNCA']),
         ])->save();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil ditambahkan.');
     }
 
     public function updateBalanceSheet(Request $request)
@@ -127,7 +127,16 @@ class FinanceController extends Controller
             'depreciation'  => $this->strToIntr($validation['depreciationNCA']),
         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil diupdate.');
+    }
+
+    public function deleteBalanceSheet(Request $request)
+    {
+        // Delete data
+        CurrentAsset::where('id', $request->caID)->delete();
+        NonCurrentAsset::where('id', $request->ncaID)->delete();
+
+        return redirect()->back()->with('success', 'Berhasil dihapus.');
     }
 
     public function balanceSheetReport(Request $request)
@@ -331,7 +340,7 @@ class FinanceController extends Controller
             'factory_overhead'  => $this->strToIntr($validation['factoryOverheadCOGS']),
         ])->save();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil ditambahkan.');
     }
 
     public function updateProfitLossCOGS(Request $request)
@@ -354,7 +363,7 @@ class FinanceController extends Controller
             'factory_overhead'  => $this->strToIntr($validation['factoryOverheadCOGS']),
         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil diupdate.');
     }
 
     public function getProfitLossSSE($month)
@@ -402,7 +411,7 @@ class FinanceController extends Controller
             'other_cost'            => $this->strToIntr($validation['otherCostSSE']),
         ])->save();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil ditambahkan.');
     }
 
     public function updateProfitLossSSE(Request $request)
@@ -427,7 +436,7 @@ class FinanceController extends Controller
             'other_cost'            => $this->strToIntr($validation['otherCostSSE']),
         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil diupdate.');
     }
 
     public function getProfitLossGA($month)
@@ -489,7 +498,7 @@ class FinanceController extends Controller
             'other_cost'                => $this->strToIntr($validation['otherCostGA']),
         ])->save();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil ditambahkan.');
     }
 
     public function updateProfitLossGA(Request $request)
@@ -528,7 +537,17 @@ class FinanceController extends Controller
             'other_cost'                => $this->strToIntr($validation['otherCostGA']),
         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil diupdate.');
+    }
+
+    public function deleteProfitLoss(Request $request)
+    {
+        // Delete data
+        CostOfGoodsSold::where('id', $request->cogsID)->delete();
+        SellingServiceExpenses::where('id', $request->sseID)->delete();
+        GeneralAdminCost::where('id', $request->gacID)->delete();
+
+        return redirect()->back()->with('success', 'Berhasil dihapus.');
     }
 
     public function profitLossReport(Request $request)
@@ -1157,7 +1176,7 @@ class FinanceController extends Controller
             'cash'      => $this->strToIntr($validation['cashCI']),
         ])->save();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil ditambahkan.');
     }
 
     public function updateCashFlow(Request $request)
@@ -1174,7 +1193,15 @@ class FinanceController extends Controller
         // Update CI
         $cash_in->update(['cash' => $this->strToIntr($validation['cashCI'])]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Berhasil diupdate.');
+    }
+
+    public function deleteCashFlow(Request $request)
+    {
+        // Delete data
+        CashIn::where('id', $request->input('ciID'))->delete();
+
+        return redirect()->back()->with('success', 'Berhasil dihapus.');
     }
 
     public function cashFlowReport(Request $request)
